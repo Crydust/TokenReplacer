@@ -110,4 +110,19 @@ public class TokenReplacerTest {
         String actual = cut.replace(input);
         assertThat(actual, is(expected));
     }
+    
+    @Test
+    public void testReplacetokensWithBackslashAndDollar() {
+        String begintoken = "<";
+        String endtoken = ">";
+        Map<String, String> replacetokens = new HashMap<>();
+        replacetokens.put("a", "a\\a");
+        replacetokens.put("b", "b$b");
+        replacetokens.put("c", "c<c");
+        String input = "<a> Lorem <b> ipsum <c>";
+        String expected = "a\\a Lorem b$b ipsum c<c";
+        TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
+        String actual = cut.replace(input);
+        assertThat(actual, is(expected));
+    }
 }

@@ -54,7 +54,8 @@ public class TokenReplacer {
         Matcher matcher = getPattern().matcher(input);
         StringBuffer stringBuffer = new StringBuffer();
         while (matcher.find()) {
-            matcher.appendReplacement(stringBuffer, replacetokens.get(matcher.group(1)));
+            String replacement = Matcher.quoteReplacement(replacetokens.get(matcher.group(1)));
+            matcher.appendReplacement(stringBuffer, replacement);
         }
         matcher.appendTail(stringBuffer);
         return stringBuffer.toString();
