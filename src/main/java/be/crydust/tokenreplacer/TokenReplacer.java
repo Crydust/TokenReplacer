@@ -62,14 +62,19 @@ public class TokenReplacer {
      * @param input
      * @return
      */
-    public String replace(String input) {
-        Matcher matcher = getPattern().matcher(input);
-        StringBuffer stringBuffer = new StringBuffer();
-        while (matcher.find()) {
-            String replacement = Matcher.quoteReplacement(replacetokens.get(matcher.group(1)));
-            matcher.appendReplacement(stringBuffer, replacement);
+    public String replace(final String input) {
+        final Matcher matcher = getPattern().matcher(input);
+        final StringBuilder sb = new StringBuilder();
+        int position = 0;
+        while(matcher.find()) {
+            // appendReplacement
+            sb.append(input, position, matcher.start());
+            position = matcher.end();
+            final String replacement = replacetokens.get(matcher.group(1));
+            sb.append(replacement);
         }
-        matcher.appendTail(stringBuffer);
-        return stringBuffer.toString();
+        // appendTail
+        sb.append(input, position, input.length());
+        return sb.toString();
     }
 }
