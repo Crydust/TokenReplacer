@@ -15,3 +15,4 @@ A simple replacement for ants replace with replacetoken.
      -q,--quiet                  quiet mode, do not ask if ok to replace
      -r,--replacetokens <file>   property file containing key value pairs (use
                                  -D to override)
+     -x,--exclude <glob>         glob pattern to exclude
