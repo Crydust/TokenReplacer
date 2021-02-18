@@ -28,12 +28,7 @@ public class FilesFinder implements Callable<List<Path>> {
     private final PathMatcher includesMatcher;
     private final PathMatcher excludesMatcher;
 
-    private static final PathMatcher ALL_FALSE = new PathMatcher() {
-        @Override
-        public boolean matches(Path path) {
-            return false;
-        }
-    };
+    private static final PathMatcher ALL_FALSE = it -> false;
 
     /**
      * FilesFinder with only one include pattern
