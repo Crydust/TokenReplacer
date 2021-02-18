@@ -2,6 +2,7 @@ package be.crydust.tokenreplacer;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -81,8 +82,8 @@ public final class App {
                 if (commandLine.hasOption("replacetokens")) {
                     Path replacetokensPath = Paths.get(commandLine.getOptionValue("replacetokens", System.getProperty("user.dir")));
                     Properties properties = new Properties();
-                    try {
-                        properties.load(new FileInputStream(replacetokensPath.toFile()));
+                    try (InputStream in = new FileInputStream(replacetokensPath.toFile())) {
+                        properties.load(in);
                         for (String key : properties.stringPropertyNames()) {
                             replacetokens.put(key, properties.getProperty(key));
                         }
