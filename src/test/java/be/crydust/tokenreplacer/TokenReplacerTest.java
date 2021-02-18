@@ -122,7 +122,7 @@ class TokenReplacerTest {
         String actual = cut.replace(input);
         assertThat(actual, is(expected));
     }
-    
+
     @Test
     void testReplacetokensWithBackslashAndDollar() {
         String begintoken = "<";

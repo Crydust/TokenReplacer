@@ -39,7 +39,7 @@ class AppTest {
         Config result = App.readConfig(args);
         assertThat(result, is(not(nullValue())));
         assertThat(result.getExcludes(), is(new String[]{
-            "**/tmp/**"
+                "**/tmp/**"
         }));
     }
 
@@ -49,7 +49,7 @@ class AppTest {
         Config result = App.readConfig(args);
         assertThat(result, is(not(nullValue())));
         assertThat(result.getExcludes(), is(new String[]{
-            "**/tmp/**", "**/0,1,2.zzz"
+                "**/tmp/**", "**/0,1,2.zzz"
         }));
     }
 

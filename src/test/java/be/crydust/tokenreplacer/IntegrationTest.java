@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- *
  * @author kristof
  */
 class IntegrationTest {
@@ -28,7 +27,7 @@ class IntegrationTest {
         String output = new FileReader(a).call();
         assertThat(output, is(input));
     }
-    
+
     @Test
     void testReplaceWriteAndRead(@TempDir Path folder) throws Exception {
         String expected = "Lorem ipsum";
@@ -56,11 +55,11 @@ class IntegrationTest {
         replacetokens.put("a", "Lorem");
         replacetokens.put("b", "ipsum");
         File aTemplate = newFile(folder, "a.template");
-        
+
         new FileWriter(input, aTemplate.toPath()).run();
         TokenReplacer replacer = new TokenReplacer(begintoken, endtoken, replacetokens);
         List<Path> templates = new FilesFinder(folder, "**/*.template", new String[0]).call();
-        for(Path template : templates){
+        for (Path template : templates) {
             Path file = FileExtensionUtil.replaceExtension(template, "");
             if (Files.exists(file)) {
                 String fileContents = new FileReader(file).call();
@@ -71,7 +70,7 @@ class IntegrationTest {
             new FileWriter(replacer.replace(templateContents), file).run();
         }
         String output = new FileReader(folder.resolve("a")).call();
-        
+
         assertThat(output, is(expected));
     }
 

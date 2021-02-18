@@ -3,7 +3,6 @@ package be.crydust.tokenreplacer;
 import java.util.Objects;
 
 /**
- *
  * @author kristof
  */
 public final class Strings {

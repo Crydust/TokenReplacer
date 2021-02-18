@@ -21,12 +21,12 @@ public class Config {
     private final String[] excludes;
 
     /**
-     * @param begintoken string that precedes the key to replace
-     * @param endtoken string that follows the key to replace
+     * @param begintoken    string that precedes the key to replace
+     * @param endtoken      string that follows the key to replace
      * @param replacetokens key-value pairs to replace
-     * @param folder base directory to start replacing
-     * @param quiet true if no confirmation should be asked
-     * @param excludes patterns to exclude from replacement
+     * @param folder        base directory to start replacing
+     * @param quiet         true if no confirmation should be asked
+     * @param excludes      patterns to exclude from replacement
      */
     public Config(@Nonnull String begintoken, @Nonnull String endtoken, @Nonnull Map<String, String> replacetokens, @Nonnull Path folder, boolean quiet, @Nonnull String[] excludes) {
         Strings.requireNonEmpty(begintoken);

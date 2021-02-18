@@ -7,7 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
  * @author kristof
  */
 public class TokenReplacer {
@@ -19,7 +18,6 @@ public class TokenReplacer {
     private Pattern pattern;
 
     /**
-     *
      * @param begintoken
      * @param endtoken
      * @param replacetokens
@@ -66,7 +64,7 @@ public class TokenReplacer {
         final Matcher matcher = getPattern().matcher(input);
         final StringBuilder sb = new StringBuilder();
         int position = 0;
-        while(matcher.find()) {
+        while (matcher.find()) {
             // appendReplacement
             sb.append(input, position, matcher.start());
             position = matcher.end();

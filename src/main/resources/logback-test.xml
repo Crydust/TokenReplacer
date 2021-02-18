@@ -9,10 +9,10 @@
         </encoder>
     </appender>
 
-    <logger name="be" level="ALL" />
+    <logger name="be" level="ALL"/>
 
     <root level="INFO">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </root>
 
 </configuration>

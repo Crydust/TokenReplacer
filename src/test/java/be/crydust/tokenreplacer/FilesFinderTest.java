@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- *
  * @author kristof
  */
 class FilesFinderTest {
@@ -68,7 +67,7 @@ class FilesFinderTest {
         List<Path> files = cut.call();
         assertThat(files.size(), is(2));
     }
-    
+
     @Test
     void testExcludeTwo(@TempDir Path folder) throws IOException {
         newFile(folder, "1.template");
@@ -92,5 +91,5 @@ class FilesFinderTest {
         List<Path> files = cut.call();
         assertThat(files.size(), is(2));
     }
-    
+
 }

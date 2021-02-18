@@ -2,6 +2,7 @@ package be.crydust.tokenreplacer;
 
 import java.nio.file.Path;
 import java.util.Objects;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -27,9 +28,9 @@ public final class FileExtensionUtil {
      *     // returns c:/temp/numbers.csv
      * </pre>
      *
-     * @param path original path of the file
+     * @param path         original path of the file
      * @param newExtension extension for the resulting file. Use an empty string
-     * to simply remove the extension. Prepending a dot is not necessary.
+     *                     to simply remove the extension. Prepending a dot is not necessary.
      * @return path with its filename extension replaced by newExtension
      */
     @Nonnull
