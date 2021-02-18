@@ -1,6 +1,5 @@
 package be.crydust.tokenreplacer;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -49,7 +48,7 @@ public class FileReader implements Callable<String> {
             throw new RuntimeException("file is too large to read");
         }
         byte[] encoded = Files.readAllBytes(path);
-        return encoding.decode(ByteBuffer.wrap(encoded)).toString();
+        return new String(encoded, encoding);
     }
 
 }
