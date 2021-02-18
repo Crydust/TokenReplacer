@@ -74,8 +74,7 @@ public class FilesFinder implements Callable<List<Path>> {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                     Path relativePath = path.relativize(file);
-                    if (relativePath != null
-                            && includesMatcher.matches(relativePath)
+                    if (includesMatcher.matches(relativePath)
                             && !excludesMatcher.matches(relativePath)) {
                         files.add(file);
                     }
