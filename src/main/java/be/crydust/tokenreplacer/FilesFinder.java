@@ -1,14 +1,13 @@
 package be.crydust.tokenreplacer;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
@@ -68,24 +67,17 @@ public class FilesFinder implements Callable<List<Path>> {
 
     @Override
     public List<Path> call() {
-        final List<Path> files = new ArrayList<>();
         try {
-            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                    Path relativePath = path.relativize(file);
-                    if (includesMatcher.matches(relativePath)
-                            && !excludesMatcher.matches(relativePath)) {
-                        files.add(file);
-                    }
-                    return FileVisitResult.CONTINUE;
-                }
-            });
+            return Files.find(path, Integer.MAX_VALUE, (file, attrs) -> {
+                Path relativePath = path.relativize(file);
+                return includesMatcher.matches(relativePath)
+                        && !excludesMatcher.matches(relativePath);
+            }).collect(toList());
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
             LOGGER.error(null, ex);
         }
-        return files;
+        return Collections.emptyList();
     }
 
     private static String escapeGlob(String pattern) {
