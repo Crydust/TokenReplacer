@@ -1,6 +1,5 @@
 package be.crydust.tokenreplacer;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -54,8 +53,8 @@ public class FileWriter implements Runnable {
     @Override
     public void run() {
         //Writing to file
-        try (BufferedWriter writer = Files.newBufferedWriter(path, encoding)) {
-            writer.append(contents);
+        try {
+            Files.write(path, contents.getBytes(encoding));
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
             LOGGER.error("FileWriter failed");
