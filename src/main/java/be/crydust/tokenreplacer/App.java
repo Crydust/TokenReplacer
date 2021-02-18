@@ -10,12 +10,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Scanner;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import org.apache.commons.cli.BasicParser;
+
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
@@ -43,11 +45,12 @@ public final class App {
         options.addOption("q", "quiet", false, "quiet mode, do not ask if ok to replace");
         options.addOption("r", "replacetokens", true, "property file containing key value pairs (use -D to override)");
         options.addOption("x", "exclude", true, "glob pattern to exclude");
-        OptionBuilder.withArgName("key=value");
-        OptionBuilder.hasArgs(2);
-        OptionBuilder.withValueSeparator('=');
-        OptionBuilder.withDescription("key value pairs to replace (required unless replacetokens file is defined)");
-        options.addOption(OptionBuilder.create("D"));
+        options.addOption(Option.builder("D")
+                .argName("key=value")
+                .numberOfArgs(2)
+                .valueSeparator('=')
+                .desc("key value pairs to replace (required unless replacetokens file is defined)")
+                .build());
         options.getOption("begintoken").setArgName("token");
         options.getOption("endtoken").setArgName("token");
         options.getOption("folder").setArgName("folder");
@@ -68,7 +71,7 @@ public final class App {
         Config config = null;
         Options options = getOptions();
         try {
-            CommandLine commandLine = new BasicParser().parse(options, args);
+            CommandLine commandLine = new DefaultParser().parse(options, args);
             if (commandLine.hasOption("help")
                     || !(commandLine.hasOption("D") || commandLine.hasOption("replacetokens"))) {
                 System.err.println("Provide at least one -D or -r argument.");
