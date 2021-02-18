@@ -13,7 +13,7 @@ public class TokenReplacerTest {
     public void testReplacetokensWithEmptyReplacetokens() {
         String begintoken = "<";
         String endtoken = ">";
-        Map<String, String> replacetokens = Collections.<String, String>emptyMap();
+        Map<String, String> replacetokens = Collections.emptyMap();
         TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
     }
 
