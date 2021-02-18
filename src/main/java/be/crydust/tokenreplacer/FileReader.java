@@ -15,7 +15,7 @@ import java.util.concurrent.Callable;
 public class FileReader implements Callable<String> {
 
     // 1 megabyte
-    private static final long MAX_SIZE = 1 * 1024 * 1024;
+    private static final long MAX_SIZE = 1048576;
     private static final Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
 
     private final Path path;
