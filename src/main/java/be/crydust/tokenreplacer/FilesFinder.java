@@ -89,7 +89,7 @@ public class FilesFinder implements Callable<List<Path>> {
     }
 
     private static String escapeGlob(String pattern) {
-        return pattern.replaceAll("([\\[\\]!\\{\\}])", "\\\\$1");
+        return pattern.replaceAll("([\\[\\]!{}])", "\\\\$1");
     }
 
     private static String patternsToGlob(String[] patterns) {
