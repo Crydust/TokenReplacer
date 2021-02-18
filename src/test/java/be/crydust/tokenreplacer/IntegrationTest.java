@@ -1,41 +1,36 @@
 package be.crydust.tokenreplacer;
 
+import static be.crydust.tokenreplacer.TempDirHelper.newFile;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  *
  * @author kristof
  */
-public class IntegrationTest {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(IntegrationTest.class);
-
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+class IntegrationTest {
 
     @Test
-    public void testWriteAndRead() throws Exception {
+    void testWriteAndRead(@TempDir Path folder) throws Exception {
         String input = "Lorem ipsum";
-        Path a = folder.newFile("a").toPath();
+        Path a = newFile(folder, "a").toPath();
         new FileWriter(input, a).run();
         String output = new FileReader(a).call();
         assertThat(output, is(input));
     }
     
     @Test
-    public void testReplaceWriteAndRead() throws Exception {
+    void testReplaceWriteAndRead(@TempDir Path folder) throws Exception {
         String expected = "Lorem ipsum";
         String begintoken = "@";
         String endtoken = "@";
@@ -45,14 +40,14 @@ public class IntegrationTest {
         replacetokens.put("b", "ipsum");
         TokenReplacer replacer = new TokenReplacer(begintoken, endtoken, replacetokens);
         String replaced = replacer.replace(input);
-        Path a = folder.newFile("a").toPath();
+        Path a = newFile(folder, "a").toPath();
         new FileWriter(replaced, a).run();
         String output = new FileReader(a).call();
         assertThat(output, is(expected));
     }
 
     @Test
-    public void testFindReadReplaceWriteAndRead() throws Exception {
+    void testFindReadReplaceWriteAndRead(@TempDir Path folder) throws Exception {
         String expected = "Lorem ipsum";
         String begintoken = "@";
         String endtoken = "@";
@@ -60,11 +55,11 @@ public class IntegrationTest {
         Map<String, String> replacetokens = new HashMap<>();
         replacetokens.put("a", "Lorem");
         replacetokens.put("b", "ipsum");
-        File aTemplate = folder.newFile("a.template");
+        File aTemplate = newFile(folder, "a.template");
         
         new FileWriter(input, aTemplate.toPath()).run();
         TokenReplacer replacer = new TokenReplacer(begintoken, endtoken, replacetokens);
-        List<Path> templates = new FilesFinder(folder.getRoot().toPath(), "**/*.template", new String[0]).call();
+        List<Path> templates = new FilesFinder(folder, "**/*.template", new String[0]).call();
         for(Path template : templates){
             Path file = FileExtensionUtil.replaceExtension(template, "");
             if (Files.exists(file)) {
@@ -75,7 +70,7 @@ public class IntegrationTest {
             String templateContents = new FileReader(template).call();
             new FileWriter(replacer.replace(templateContents), file).run();
         }
-        String output = new FileReader(folder.getRoot().toPath().resolve("a")).call();
+        String output = new FileReader(folder.resolve("a")).call();
         
         assertThat(output, is(expected));
     }

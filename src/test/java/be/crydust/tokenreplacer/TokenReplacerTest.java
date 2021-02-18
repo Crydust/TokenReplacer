@@ -1,24 +1,27 @@
 package be.crydust.tokenreplacer;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Test;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
-public class TokenReplacerTest {
+import org.junit.jupiter.api.Test;
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testReplacetokensWithEmptyReplacetokens() {
+class TokenReplacerTest {
+
+    @Test
+    void testReplacetokensWithEmptyReplacetokens() {
         String begintoken = "<";
         String endtoken = ">";
         Map<String, String> replacetokens = Collections.emptyMap();
-        TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
+        assertThrows(IllegalArgumentException.class, () -> new TokenReplacer(begintoken, endtoken, replacetokens));
     }
 
     @Test
-    public void testReplacetokensWithNoMatches() {
+    void testReplacetokensWithNoMatches() {
         String begintoken = "<";
         String endtoken = ">";
         Map<String, String> replacetokens = new HashMap<>();
@@ -31,7 +34,7 @@ public class TokenReplacerTest {
     }
 
     @Test
-    public void testReplacetokensWithOneMatch() {
+    void testReplacetokensWithOneMatch() {
         String begintoken = "<";
         String endtoken = ">";
         Map<String, String> replacetokens = new HashMap<>();
@@ -44,7 +47,7 @@ public class TokenReplacerTest {
     }
 
     @Test
-    public void testReplacetokensWithMatchAtStartMiddleEnd() {
+    void testReplacetokensWithMatchAtStartMiddleEnd() {
         String begintoken = "<";
         String endtoken = ">";
         Map<String, String> replacetokens = new HashMap<>();
@@ -57,7 +60,7 @@ public class TokenReplacerTest {
     }
 
     @Test
-    public void testReplacetokensWithWierdCharacters() {
+    void testReplacetokensWithWierdCharacters() {
         String begintoken = "<";
         String endtoken = ">";
         Map<String, String> replacetokens = new HashMap<>();
@@ -70,7 +73,7 @@ public class TokenReplacerTest {
     }
 
     @Test
-    public void testReplacetokensWithMultipleKeys() {
+    void testReplacetokensWithMultipleKeys() {
         String begintoken = "<";
         String endtoken = ">";
         Map<String, String> replacetokens = new HashMap<>();
@@ -87,7 +90,7 @@ public class TokenReplacerTest {
     }
 
     @Test
-    public void testReplacetokensWithMultipleKeysAndEqualBeginEndToken() {
+    void testReplacetokensWithMultipleKeysAndEqualBeginEndToken() {
         String begintoken = "@";
         String endtoken = "@";
         Map<String, String> replacetokens = new HashMap<>();
@@ -104,7 +107,7 @@ public class TokenReplacerTest {
     }
 
     @Test
-    public void testReplacetokensWithDotTokens() {
+    void testReplacetokensWithDotTokens() {
         String begintoken = ".";
         String endtoken = ".";
         Map<String, String> replacetokens = new HashMap<>();
@@ -121,7 +124,7 @@ public class TokenReplacerTest {
     }
     
     @Test
-    public void testReplacetokensWithBackslashAndDollar() {
+    void testReplacetokensWithBackslashAndDollar() {
         String begintoken = "<";
         String endtoken = ">";
         Map<String, String> replacetokens = new HashMap<>();

@@ -1,93 +1,94 @@
 package be.crydust.tokenreplacer;
 
+import static be.crydust.tokenreplacer.TempDirHelper.newFile;
+import static be.crydust.tokenreplacer.TempDirHelper.newFolder;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  *
  * @author kristof
  */
-public class FilesFinderTest {
-
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+class FilesFinderTest {
 
     @Test
-    public void testEmpty() {
-        FilesFinder cut = new FilesFinder(folder.getRoot().toPath(), "**/*.template", new String[0]);
+    void testEmpty(@TempDir Path folder) {
+        FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[0]);
         List<Path> files = cut.call();
         assertThat(files, is(empty()));
     }
 
     @Test
-    public void testOneFile() throws IOException {
-        folder.newFile("a.template");
-        FilesFinder cut = new FilesFinder(folder.getRoot().toPath(), "**/*.template", new String[0]);
+    void testOneFile(@TempDir Path folder) throws IOException {
+        newFile(folder, "a.template");
+        FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[0]);
         List<Path> files = cut.call();
         assertThat(files.size(), is(1));
     }
 
     @Test
-    public void testTwoFiles() throws IOException {
-        folder.newFile("a.template");
-        File subFolder = folder.newFolder();
+    void testTwoFiles(@TempDir Path folder) throws IOException {
+        newFile(folder, "a.template");
+        File subFolder = newFolder(folder);
         new File(subFolder, "b.template").createNewFile();
-        FilesFinder cut = new FilesFinder(folder.getRoot().toPath(), "**/*.template", new String[0]);
+        FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[0]);
         List<Path> files = cut.call();
         assertThat(files.size(), is(2));
     }
 
     @Test
-    public void testExcludeNothing() throws IOException {
-        folder.newFile("1.template");
-        folder.newFolder("tmp");
-        folder.newFile("tmp/2.template");
-        folder.newFolder("xxx");
-        folder.newFile("xxx/3.template");
-        FilesFinder cut = new FilesFinder(folder.getRoot().toPath(), "**/*.template", new String[0]);
+    void testExcludeNothing(@TempDir Path folder) throws IOException {
+        newFile(folder, "1.template");
+        newFolder(folder, "tmp");
+        newFile(folder, "tmp/2.template");
+        newFolder(folder, "xxx");
+        newFile(folder, "xxx/3.template");
+        FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[0]);
         List<Path> files = cut.call();
         assertThat(files.size(), is(3));
     }
 
     @Test
-    public void testExcludeOne() throws IOException {
-        folder.newFile("1.template");
-        folder.newFolder("tmp");
-        folder.newFile("tmp/excluded.template");
-        folder.newFolder("xxx");
-        folder.newFile("xxx/2.template");
-        FilesFinder cut = new FilesFinder(folder.getRoot().toPath(), "**/*.template", new String[]{"**/tmp/**"});
+    void testExcludeOne(@TempDir Path folder) throws IOException {
+        newFile(folder, "1.template");
+        newFolder(folder, "tmp");
+        newFile(folder, "tmp/excluded.template");
+        newFolder(folder, "xxx");
+        newFile(folder, "xxx/2.template");
+        FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[]{"**/tmp/**"});
         List<Path> files = cut.call();
         assertThat(files.size(), is(2));
     }
     
     @Test
-    public void testExcludeTwo() throws IOException {
-        folder.newFile("1.template");
-        folder.newFolder("tmp");
-        folder.newFile("tmp/excluded.template");
-        folder.newFolder("xxx");
-        folder.newFile("xxx/excluded.template");
-        FilesFinder cut = new FilesFinder(folder.getRoot().toPath(), "**/*.template", new String[]{"**/tmp/**", "**/xxx/**"});
+    void testExcludeTwo(@TempDir Path folder) throws IOException {
+        newFile(folder, "1.template");
+        newFolder(folder, "tmp");
+        newFile(folder, "tmp/excluded.template");
+        newFolder(folder, "xxx");
+        newFile(folder, "xxx/excluded.template");
+        FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[]{"**/tmp/**", "**/xxx/**"});
         List<Path> files = cut.call();
         assertThat(files.size(), is(1));
     }
 
     @Test
-    public void testExcludeEscape() throws IOException {
-        folder.newFile("1.template");
-        folder.newFolder("tmp");
-        folder.newFile("tmp/excluded.template");
-        folder.newFolder("a[]!{},b");
-        folder.newFile("a[]!{},b/excluded.template");
-        FilesFinder cut = new FilesFinder(folder.getRoot().toPath(), "**/*.template", new String[]{"**/tmp/**", "**/a[]!{},b/**"});
+    void testExcludeEscape(@TempDir Path folder) throws IOException {
+        newFile(folder, "1.template");
+        newFolder(folder, "tmp");
+        newFile(folder, "tmp/excluded.template");
+        newFolder(folder, "a[]!{},b");
+        newFile(folder, "a[]!{},b/excluded.template");
+        FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[]{"**/tmp/**", "**/a[]!{},b/**"});
         List<Path> files = cut.call();
         assertThat(files.size(), is(2));
     }
