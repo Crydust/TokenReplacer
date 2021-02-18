@@ -1,0 +1,10 @@
+# EditorConfig is awesome: http://EditorConfig.org
+
+[*.{css,htm,html,java,js,jsp,jspf,puml,sql,tag,xml,xsd,xslt}]
+charset = utf-8
+ij_continuation_indent_size = 8
+#end_of_line = native
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
