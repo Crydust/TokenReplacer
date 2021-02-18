@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +17,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FileWriter implements Runnable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FilesFinder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileWriter.class);
 
     private static final Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
 
