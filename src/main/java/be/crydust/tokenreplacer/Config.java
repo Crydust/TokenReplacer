@@ -3,9 +3,8 @@ package be.crydust.tokenreplacer;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Objects;
+
 import javax.annotation.Nonnull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The application configuration. A dumb value object.
@@ -13,8 +12,6 @@ import org.slf4j.LoggerFactory;
  * @author kristof
  */
 public class Config {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(Config.class);
 
     private final String begintoken;
     private final String endtoken;
