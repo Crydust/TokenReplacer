@@ -38,26 +38,52 @@ public final class App {
     }
 
     private static Options getOptions() {
-        Options options = new Options();
-        options.addOption("h", "help", false, "print this message");
-        options.addOption("b", "begintoken", true, "begintoken (default @)");
-        options.addOption("e", "endtoken", true, "endtoken (default @)");
-        options.addOption("f", "folder", true, "folder (default current directory)");
-        options.addOption("q", "quiet", false, "quiet mode, do not ask if ok to replace");
-        options.addOption("r", "replacetokens", true, "property file containing key value pairs (use -D to override)");
-        options.addOption("x", "exclude", true, "glob pattern to exclude");
-        options.addOption(Option.builder("D")
-                .argName("key=value")
-                .numberOfArgs(2)
-                .valueSeparator('=')
-                .desc("key value pairs to replace (required unless replacetokens file is defined)")
-                .build());
-        options.getOption("begintoken").setArgName("token");
-        options.getOption("endtoken").setArgName("token");
-        options.getOption("folder").setArgName("folder");
-        options.getOption("replacetokens").setArgName("file");
-        options.getOption("exclude").setArgName("glob");
-        return options;
+        return new Options()
+                .addOption(Option.builder("h")
+                        .longOpt("help")
+                        .hasArg(false)
+                        .desc("print this message")
+                        .build())
+                .addOption(Option.builder("b")
+                        .longOpt("begintoken")
+                        .hasArg(true)
+                        .desc("begintoken (default @)")
+                        .argName("token")
+                        .build())
+                .addOption(Option.builder("e")
+                        .longOpt("endtoken")
+                        .hasArg(true)
+                        .desc("endtoken (default @)")
+                        .argName("token")
+                        .build())
+                .addOption(Option.builder("f")
+                        .longOpt("folder")
+                        .hasArg(true)
+                        .desc("folder (default current directory)")
+                        .argName("folder")
+                        .build())
+                .addOption(Option.builder("q")
+                        .longOpt("quiet")
+                        .hasArg(false)
+                        .desc("quiet mode, do not ask if ok to replace")
+                        .build())
+                .addOption(Option.builder("r")
+                        .longOpt("replacetokens")
+                        .hasArg(true)
+                        .desc("property file containing key value pairs (use -D to override)")
+                        .argName("file")
+                        .build())
+                .addOption(Option.builder("x")
+                        .longOpt("exclude")
+                        .hasArg(true)
+                        .desc("glob pattern to exclude").argName("glob")
+                        .build())
+                .addOption(Option.builder("D")
+                        .argName("key=value")
+                        .numberOfArgs(2)
+                        .valueSeparator('=')
+                        .desc("key value pairs to replace (required unless replacetokens file is defined)")
+                        .build());
     }
 
     /**
