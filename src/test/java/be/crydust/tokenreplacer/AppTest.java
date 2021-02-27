@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class AppTest {
@@ -14,12 +15,11 @@ class AppTest {
     @Test
     void testReadConfigNull() {
         String[] args = new String[0];
-        Config result = App.readConfig(args);
-        assertThat(result, is(nullValue()));
+        Assertions.assertThrows(ReadConfigFailed.class, () -> App.readConfig(args));
     }
 
     @Test
-    void testReadConfigSimple() {
+    void testReadConfigSimple() throws ReadConfigFailed {
         String[] args = "-D a=b".split(" ");
         Config result = App.readConfig(args);
         assertThat(result, is(not(nullValue())));
@@ -34,7 +34,7 @@ class AppTest {
     }
 
     @Test
-    void testReadConfigIncludeAndExclude() {
+    void testReadConfigIncludeAndExclude() throws ReadConfigFailed {
         String[] args = "-D a=b -exclude **/tmp/**".split(" ");
         Config result = App.readConfig(args);
         assertThat(result, is(not(nullValue())));
@@ -44,7 +44,7 @@ class AppTest {
     }
 
     @Test
-    void testReadConfigIncludeAndExcludeMultiple() {
+    void testReadConfigIncludeAndExcludeMultiple() throws ReadConfigFailed {
         String[] args = "-D a=b -exclude **/tmp/** -exclude **/0,1,2.zzz".split(" ");
         Config result = App.readConfig(args);
         assertThat(result, is(not(nullValue())));

@@ -1,9 +1,10 @@
 package be.crydust.tokenreplacer;
 
-import java.io.FileInputStream;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -12,7 +13,6 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.Scanner;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.commons.cli.CommandLine;
@@ -30,126 +30,131 @@ import org.slf4j.LoggerFactory;
  */
 public final class App {
 
+    static final Options OPTIONS = new Options()
+            .addOption(Option.builder("h")
+                    .longOpt("help")
+                    .hasArg(false)
+                    .desc("print this message")
+                    .build())
+            .addOption(Option.builder("b")
+                    .longOpt("begintoken")
+                    .hasArg(true)
+                    .desc("begintoken (default @)")
+                    .argName("token")
+                    .build())
+            .addOption(Option.builder("e")
+                    .longOpt("endtoken")
+                    .hasArg(true)
+                    .desc("endtoken (default @)")
+                    .argName("token")
+                    .build())
+            .addOption(Option.builder("f")
+                    .longOpt("folder")
+                    .hasArg(true)
+                    .desc("folder (default current directory)")
+                    .argName("folder")
+                    .build())
+            .addOption(Option.builder("q")
+                    .longOpt("quiet")
+                    .hasArg(false)
+                    .desc("quiet mode, do not ask if ok to replace")
+                    .build())
+            .addOption(Option.builder("r")
+                    .longOpt("replacetokens")
+                    .hasArg(true)
+                    .desc("property file containing key value pairs (use -D to override)")
+                    .argName("file")
+                    .build())
+            .addOption(Option.builder("x")
+                    .longOpt("exclude")
+                    .hasArg(true)
+                    .desc("glob pattern to exclude").argName("glob")
+                    .build())
+            .addOption(Option.builder("D")
+                    .argName("key=value")
+                    .numberOfArgs(2)
+                    .valueSeparator('=')
+                    .desc("key value pairs to replace (required unless replacetokens file is defined)")
+                    .build());
+
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
 
     private App() {
-    }
-
-    private static Options getOptions() {
-        return new Options()
-                .addOption(Option.builder("h")
-                        .longOpt("help")
-                        .hasArg(false)
-                        .desc("print this message")
-                        .build())
-                .addOption(Option.builder("b")
-                        .longOpt("begintoken")
-                        .hasArg(true)
-                        .desc("begintoken (default @)")
-                        .argName("token")
-                        .build())
-                .addOption(Option.builder("e")
-                        .longOpt("endtoken")
-                        .hasArg(true)
-                        .desc("endtoken (default @)")
-                        .argName("token")
-                        .build())
-                .addOption(Option.builder("f")
-                        .longOpt("folder")
-                        .hasArg(true)
-                        .desc("folder (default current directory)")
-                        .argName("folder")
-                        .build())
-                .addOption(Option.builder("q")
-                        .longOpt("quiet")
-                        .hasArg(false)
-                        .desc("quiet mode, do not ask if ok to replace")
-                        .build())
-                .addOption(Option.builder("r")
-                        .longOpt("replacetokens")
-                        .hasArg(true)
-                        .desc("property file containing key value pairs (use -D to override)")
-                        .argName("file")
-                        .build())
-                .addOption(Option.builder("x")
-                        .longOpt("exclude")
-                        .hasArg(true)
-                        .desc("glob pattern to exclude").argName("glob")
-                        .build())
-                .addOption(Option.builder("D")
-                        .argName("key=value")
-                        .numberOfArgs(2)
-                        .valueSeparator('=')
-                        .desc("key value pairs to replace (required unless replacetokens file is defined)")
-                        .build());
     }
 
     /**
      * Turns the arguments from the command line into a Config.
      *
      * @param args the command line arguments to parse
-     * @return a valid configuration or null
+     * @return a valid configuration
+     * @throws ReadConfigFailed when configuration is not valid or the excludes file could not be read.
      */
-    @CheckForNull
-    public static Config readConfig(@Nonnull String[] args) {
+    @Nonnull
+    static Config readConfig(@Nonnull String[] args) throws ReadConfigFailed {
         Objects.requireNonNull(args);
         Config config = null;
-        Options options = getOptions();
         try {
-            CommandLine commandLine = new DefaultParser().parse(options, args);
+            CommandLine commandLine = new DefaultParser().parse(App.OPTIONS, args);
             if (commandLine.hasOption("help")
                     || !(commandLine.hasOption("D") || commandLine.hasOption("replacetokens"))) {
-                System.err.println("Provide at least one -D or -r argument.");
-                printHelp(options);
-            } else {
-                Map<String, String> replacetokens = new HashMap<>();
-                if (commandLine.hasOption("replacetokens")) {
-                    Path replacetokensPath = Paths.get(commandLine.getOptionValue("replacetokens", System.getProperty("user.dir")));
-                    Properties properties = new Properties();
-                    try (InputStream in = new FileInputStream(replacetokensPath.toFile())) {
-                        properties.load(in);
-                        for (String key : properties.stringPropertyNames()) {
-                            replacetokens.put(key, properties.getProperty(key));
-                        }
-                    } catch (IOException ex) {
-                        System.err.printf("File %s could not be read.%n%s%n", replacetokensPath, ex.getMessage());
-                        printHelp(options);
-                    }
-                }
-                if (commandLine.hasOption("D")) {
-                    Properties properties = commandLine.getOptionProperties("D");
-                    for (String key : properties.stringPropertyNames()) {
-                        String value = properties.getProperty(key);
-                        if (replacetokens.containsKey(key)) {
-                            System.out.printf("Overriding %s with value %s.%n", key, value);
-                        }
-                        replacetokens.put(key, value);
-                    }
-                }
-                String[] excludes = new String[0];
-                if (commandLine.hasOption("exclude")) {
-                    excludes = commandLine.getOptionValues("exclude");
-                }
-                config = new Config(
-                        commandLine.getOptionValue("begintoken", "@"),
-                        commandLine.getOptionValue("endtoken", "@"),
-                        replacetokens,
-                        Paths.get(commandLine.getOptionValue("folder", System.getProperty("user.dir"))),
-                        commandLine.hasOption("quiet"),
-                        excludes
-                );
+                throw new ReadConfigFailed("Provide at least one -D or -r argument.");
             }
-        } catch (ParseException ex) {
-            LOGGER.error("Parsing failed.", ex);
-            System.err.println(ex.getMessage());
-            printHelp(options);
+            Map<String, String> replacetokens = readReplacetokens(commandLine);
+            String[] excludes = commandLine.getOptionValues("exclude");
+            if (excludes == null) {
+                excludes = new String[0];
+            }
+            config = new Config(
+                    commandLine.getOptionValue("begintoken", "@"),
+                    commandLine.getOptionValue("endtoken", "@"),
+                    replacetokens,
+                    Paths.get(commandLine.getOptionValue("folder", System.getProperty("user.dir"))),
+                    commandLine.hasOption("quiet"),
+                    excludes
+            );
+        } catch (ParseException | IOException ex) {
+            throw new ReadConfigFailed("Configuration not valid.", ex);
         }
         return config;
     }
 
-    private static void printHelp(Options options) {
+    @Nonnull
+    private static Map<String, String> readReplacetokens(CommandLine commandLine) throws IOException {
+        Map<String, String> replacetokens = new HashMap<>();
+        if (commandLine.hasOption("replacetokens")) {
+            Path replacetokensPath = Paths.get(commandLine.getOptionValue("replacetokens", System.getProperty("user.dir")));
+            Properties properties = readProperties(replacetokensPath);
+            for (String key : properties.stringPropertyNames()) {
+                replacetokens.put(key, properties.getProperty(key));
+            }
+        }
+        if (commandLine.hasOption("D")) {
+            Properties properties = commandLine.getOptionProperties("D");
+            for (String key : properties.stringPropertyNames()) {
+                String value = properties.getProperty(key);
+                if (replacetokens.containsKey(key)) {
+                    System.out.printf("Overriding %s with value %s.%n", key, value);
+                }
+                replacetokens.put(key, value);
+            }
+        }
+        return replacetokens;
+    }
+
+    @Nonnull
+    private static Properties readProperties(Path filePath) throws IOException {
+        try (InputStream in = new BufferedInputStream(Files.newInputStream(filePath))) {
+            Properties properties = new Properties();
+            properties.load(in);
+            return properties;
+        } catch (IOException ex) {
+            throw new IOException(String.format("File %s could not be read.", filePath), ex);
+        }
+    }
+
+    private static void printHelp() {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("java -jar tokenreplacer.jar", options);
+        formatter.printHelp("java -jar tokenreplacer.jar", App.OPTIONS);
     }
 
     private static boolean readContinue() {
@@ -162,8 +167,8 @@ public final class App {
     }
 
     public static void main(String[] args) {
-        Config config = readConfig(args);
-        if (config != null) {
+        try {
+            Config config = readConfig(args);
             System.out.println(config);
             if (config.isQuiet() || readContinue()) {
                 new Action(config).run();
@@ -171,6 +176,13 @@ public final class App {
             } else {
                 System.out.println("Canceled.");
             }
+        } catch (ReadConfigFailed ex) {
+            LOGGER.trace("Failed to read config", ex);
+            System.err.println(ex.getMessage());
+            if (ex.getCause() != null) {
+                System.err.println(ex.getCause().getMessage());
+            }
+            printHelp();
         }
     }
 
