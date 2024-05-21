@@ -52,8 +52,8 @@ public class TokenReplacer {
     /**
      * replaces all occurrences of "begintoken key endtoken" by "value"
      */
-    public String replace(final String input) {
-        final Matcher matcher = getPattern().matcher(input);
+    public String replace(String input) {
+        Matcher matcher = getPattern().matcher(input);
         StringBuilder stringBuilder = new StringBuilder();
         while (matcher.find()) {
             String replacement = Matcher.quoteReplacement(replacetokens.get(matcher.group(1)));
