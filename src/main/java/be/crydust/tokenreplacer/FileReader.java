@@ -41,8 +41,7 @@ public class FileReader implements Callable<String> {
         if (Files.size(path) > MAX_SIZE) {
             throw new RuntimeException("file is too large to read");
         }
-        byte[] encoded = Files.readAllBytes(path);
-        return new String(encoded, encoding);
+        return Files.readString(path, encoding);
     }
 
 }
