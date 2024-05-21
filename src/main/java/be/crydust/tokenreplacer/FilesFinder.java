@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,12 +67,12 @@ public class FilesFinder implements Callable<List<Path>> {
 
     @Override
     public List<Path> call() {
-        try {
-            return Files.find(path, Integer.MAX_VALUE, (file, attrs) -> {
-                Path relativePath = path.relativize(file);
-                return includesMatcher.matches(relativePath)
-                        && !excludesMatcher.matches(relativePath);
-            }).collect(toList());
+        try (Stream<Path> stream = Files.find(path, Integer.MAX_VALUE, (file, attrs) -> {
+            Path relativePath = path.relativize(file);
+            return includesMatcher.matches(relativePath)
+                   && !excludesMatcher.matches(relativePath);
+        })) {
+            return stream.collect(toList());
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
             LOGGER.error(null, ex);
