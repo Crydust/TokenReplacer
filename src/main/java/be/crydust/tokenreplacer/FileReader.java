@@ -21,8 +21,6 @@ public class FileReader implements Callable<String> {
 
     /**
      * FileReader with default encoding (UTF_8)
-     *
-     * @param path
      */
     public FileReader(Path path) {
         this(path, DEFAULT_ENCODING);
@@ -30,9 +28,6 @@ public class FileReader implements Callable<String> {
 
     /**
      * FileReader with custom encoding
-     *
-     * @param path
-     * @param encoding
      */
     public FileReader(Path path, Charset encoding) {
         Objects.requireNonNull(path);

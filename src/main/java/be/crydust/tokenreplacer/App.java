@@ -163,9 +163,6 @@ public final class App {
         }
     }
 
-    /**
-     * @param args
-     */
     public static void main(String[] args) {
         Config config = readConfig(args);
         if (config != null) {

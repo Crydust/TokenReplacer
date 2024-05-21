@@ -12,10 +12,6 @@ public final class Strings {
 
     /**
      * A similar method to Objects.requireNonNull.
-     *
-     * @param string
-     * @throws NullPointerException
-     * @throws IllegalArgumentException
      */
     public static void requireNonEmpty(String string) {
         Objects.requireNonNull(string);
