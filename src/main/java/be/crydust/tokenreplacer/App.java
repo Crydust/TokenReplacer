@@ -169,7 +169,7 @@ public final class App {
     public static void main(String[] args) {
         Config config = readConfig(args);
         if (config != null) {
-            System.out.println(config.toString());
+            System.out.println(config);
             if (config.isQuiet() || readContinue()) {
                 new Action(config).run();
                 System.out.println("Done.");
