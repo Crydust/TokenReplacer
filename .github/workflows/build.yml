@@ -6,17 +6,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set up JDK 17
+      - name: Set up JDK 17 for x64
         uses: actions/setup-java@v4
         with:
           java-version: '17'
-      - name: Cache local Maven repository
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: '${{ runner.os }}-repository-${{ hashFiles(''**/pom.xml'') }}'
-          restore-keys: |
-            ${{ runner.os }}-repository-
+          distribution: 'temurin'
+          architecture: x64
+          cache: 'maven'
       - name: Build with Maven
         run: mvn -f pom.xml -B clean verify
       - name: Upload artifact
@@ -24,3 +20,4 @@ jobs:
         with:
           name: distribution
           path: target/tokenreplacer-*-distribution.zip
+          compression-level: 0
