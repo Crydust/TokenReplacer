@@ -53,7 +53,7 @@ public class FileWriter implements Runnable {
     public void run() {
         //Writing to file
         try {
-            Files.write(path, contents.getBytes(encoding));
+            Files.writeString(path, contents, encoding);
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
             LOGGER.error("FileWriter failed");
