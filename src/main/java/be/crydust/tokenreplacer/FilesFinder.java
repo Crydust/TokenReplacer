@@ -1,7 +1,5 @@
 package be.crydust.tokenreplacer;
 
-import static java.util.stream.Collectors.toList;
-
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -64,7 +62,7 @@ public class FilesFinder implements Callable<List<Path>> {
             return includesMatcher.matches(relativePath)
                    && !excludesMatcher.matches(relativePath);
         })) {
-            return stream.collect(toList());
+            return stream.toList();
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
             LOGGER.error(null, ex);
