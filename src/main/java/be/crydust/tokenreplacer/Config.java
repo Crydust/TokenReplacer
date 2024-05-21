@@ -1,6 +1,9 @@
 package be.crydust.tokenreplacer;
 
+import static java.util.stream.Collectors.joining;
+
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 
@@ -21,12 +24,12 @@ public class Config {
     private final String[] excludes;
 
     /**
-     * @param begintoken    string that precedes the key to replace
-     * @param endtoken      string that follows the key to replace
+     * @param begintoken string that precedes the key to replace
+     * @param endtoken string that follows the key to replace
      * @param replacetokens key-value pairs to replace
-     * @param folder        base directory to start replacing
-     * @param quiet         true if no confirmation should be asked
-     * @param excludes      patterns to exclude from replacement
+     * @param folder base directory to start replacing
+     * @param quiet true if no confirmation should be asked
+     * @param excludes patterns to exclude from replacement
      */
     public Config(@Nonnull String begintoken, @Nonnull String endtoken, @Nonnull Map<String, String> replacetokens, @Nonnull Path folder, boolean quiet, @Nonnull String[] excludes) {
         Strings.requireNonEmpty(begintoken);
@@ -86,40 +89,23 @@ public class Config {
 
     @Override
     public String toString() {
-        StringBuilder replacetokensSB = new StringBuilder();
-        replacetokensSB.append("{");
-        for (Map.Entry<String, String> replacetoken : replacetokens.entrySet()) {
-            replacetokensSB
-                    .append("\n    ")
-                    .append(replacetoken.getKey())
-                    .append('=')
-                    .append(replacetoken.getValue())
-                    .append(",");
-        }
-        if (replacetokensSB.length() > 1) {
-            replacetokensSB.setLength(replacetokensSB.length() - 1);
-        }
-        replacetokensSB.append("\n  }");
+        String replacetokensSB = replacetokens.entrySet().stream()
+                .map(it -> "\n    %s=%s".formatted(it.getKey(), it.getValue()))
+                .collect(joining(",", "{", "\n  }"));
 
-        StringBuilder excludesSB = new StringBuilder();
-        excludesSB.append("[");
-        for (String exclude : excludes) {
-            excludesSB.append(exclude.replace(",", "\\,")).append(",");
-        }
-        if (excludesSB.length() > 1) {
-            excludesSB.setLength(excludesSB.length() - 1);
-        }
-        excludesSB.append("]");
+        String excludesSB = Arrays.stream(excludes)
+                .map(it -> it.replace(",", "\\,"))
+                .collect(joining(",", "[", "]"));
 
-        return String.format(""
-                + "Config{\n"
-                + "  begintoken=%s,\n"
-                + "  endtoken=%s,\n"
-                + "  replacetokens=%s,\n"
-                + "  folder=%s,\n"
-                + "  quiet=%s\n"
-                + "  excludes=%s\n"
-                + "}", begintoken, endtoken, replacetokensSB, folder, quiet, excludesSB);
+        return String.format("""
+                 Config{
+                   begintoken=%s,
+                   endtoken=%s,
+                   replacetokens=%s,
+                   folder=%s,
+                   quiet=%s
+                   excludes=%s
+                 }""", begintoken, endtoken, replacetokensSB, folder, quiet, excludesSB);
     }
 
 }
