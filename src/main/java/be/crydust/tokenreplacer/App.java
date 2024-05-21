@@ -158,7 +158,7 @@ public final class App {
         System.out.println("Continue [y/N]?");
         try (Scanner scanner = new Scanner(
                 System.in,
-                StandardCharsets.US_ASCII.name())) {
+                StandardCharsets.US_ASCII)) {
             return scanner.next().equalsIgnoreCase("y");
         }
     }
