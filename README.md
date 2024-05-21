@@ -1,8 +1,6 @@
 TokenReplacer
 =============
 
-[![DepShield Badge](https://depshield.sonatype.org/badges/Crydust/TokenReplacer/depshield.svg)](https://depshield.github.io)
-
 A simple replacement for ants replace with replacetoken.
 
     usage: java -jar tokenreplacer.jar
