@@ -19,5 +19,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: distribution
-          path: target/tokenreplacer-*-distribution.zip
+          path: |
+            target/tokenreplacer-*-distribution.zip
+            target/tokenreplacer-*-sources.jar
           compression-level: 0
