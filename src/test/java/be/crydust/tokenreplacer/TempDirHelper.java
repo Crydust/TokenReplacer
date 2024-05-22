@@ -23,7 +23,7 @@ final class TempDirHelper {
         if (!parent.equals(base)) {
             Files.createDirectories(parent);
         }
-        Files.write(path, new byte[0]);
+        Files.createFile(path);
         return path.toFile();
     }
 
