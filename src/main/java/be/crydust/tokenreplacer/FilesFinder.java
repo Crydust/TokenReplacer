@@ -34,7 +34,7 @@ public class FilesFinder implements Callable<List<Path>> {
     /**
      * FilesFinder with only one multiple include patterns
      */
-    public FilesFinder(Path path, String[] includes, String[] excludes) {
+    private FilesFinder(Path path, String[] includes, String[] excludes) {
         Objects.requireNonNull(path);
         Objects.requireNonNull(includes);
         Objects.requireNonNull(excludes);
