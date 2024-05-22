@@ -7,6 +7,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 
+import java.nio.file.Paths;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +27,7 @@ class AppReadConfigTest {
         assertThat(result, is(not(nullValue())));
         assertThat(result.getBegintoken(), is("@"));
         assertThat(result.getEndtoken(), is("@"));
-        //assertThat(result.getFolder(), is(???));
+        assertThat(result.getFolder(), is(Paths.get(System.getProperty("user.dir"))));
         assertThat(result.isQuiet(), is(false));
         assertThat(result, is(not(nullValue())));
         assertThat(result.getReplacetokens().size(), is(1));
