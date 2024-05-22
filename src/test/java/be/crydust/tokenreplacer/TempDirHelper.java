@@ -1,7 +1,6 @@
 package be.crydust.tokenreplacer;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
@@ -13,7 +12,7 @@ final class TempDirHelper {
         //NOOP
     }
 
-    static File newFile(Path base, String fileName) throws IOException {
+    static File newFile(Path base, String fileName) throws Exception {
         Objects.requireNonNull(base);
         Objects.requireNonNull(fileName);
         Path path = base.resolve(fileName);
@@ -28,12 +27,12 @@ final class TempDirHelper {
         return path.toFile();
     }
 
-    static File newFolder(Path base) throws IOException {
+    static File newFolder(Path base) throws Exception {
         Objects.requireNonNull(base);
         return Files.createDirectories(base.resolve(UUID.randomUUID().toString())).toFile();
     }
 
-    static File newFolder(Path base, String folderName) throws IOException {
+    static File newFolder(Path base, String folderName) throws Exception {
         Objects.requireNonNull(base);
         Objects.requireNonNull(folderName);
         final Path path = base.resolve(folderName);

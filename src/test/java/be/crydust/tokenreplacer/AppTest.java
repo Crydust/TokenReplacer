@@ -19,7 +19,7 @@ class AppTest {
     }
 
     @Test
-    void testReadConfigSimple() throws ReadConfigFailed {
+    void testReadConfigSimple() throws Exception {
         String[] args = "-D a=b".split(" ");
         Config result = App.readConfig(args);
         assertThat(result, is(not(nullValue())));
@@ -34,7 +34,7 @@ class AppTest {
     }
 
     @Test
-    void testReadConfigIncludeAndExclude() throws ReadConfigFailed {
+    void testReadConfigIncludeAndExclude() throws Exception {
         String[] args = "-D a=b -exclude **/tmp/**".split(" ");
         Config result = App.readConfig(args);
         assertThat(result, is(not(nullValue())));
@@ -44,7 +44,7 @@ class AppTest {
     }
 
     @Test
-    void testReadConfigIncludeAndExcludeMultiple() throws ReadConfigFailed {
+    void testReadConfigIncludeAndExcludeMultiple() throws Exception {
         String[] args = "-D a=b -exclude **/tmp/** -exclude **/0,1,2.zzz".split(" ");
         Config result = App.readConfig(args);
         assertThat(result, is(not(nullValue())));

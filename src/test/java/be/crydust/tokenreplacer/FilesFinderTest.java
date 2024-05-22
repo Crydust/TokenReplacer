@@ -7,7 +7,6 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -24,7 +23,7 @@ class FilesFinderTest {
     }
 
     @Test
-    void testOneFile(@TempDir Path folder) throws IOException {
+    void testOneFile(@TempDir Path folder) throws Exception {
         newFile(folder, "a.template");
         FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[0]);
         List<Path> files = cut.call();
@@ -32,7 +31,7 @@ class FilesFinderTest {
     }
 
     @Test
-    void testTwoFiles(@TempDir Path folder) throws IOException {
+    void testTwoFiles(@TempDir Path folder) throws Exception {
         newFile(folder, "a.template");
         File subFolder = newFolder(folder);
         new File(subFolder, "b.template").createNewFile();
@@ -42,7 +41,7 @@ class FilesFinderTest {
     }
 
     @Test
-    void testExcludeNothing(@TempDir Path folder) throws IOException {
+    void testExcludeNothing(@TempDir Path folder) throws Exception {
         newFile(folder, "1.template");
         newFolder(folder, "tmp");
         newFile(folder, "tmp/2.template");
@@ -54,7 +53,7 @@ class FilesFinderTest {
     }
 
     @Test
-    void testExcludeOne(@TempDir Path folder) throws IOException {
+    void testExcludeOne(@TempDir Path folder) throws Exception {
         newFile(folder, "1.template");
         newFolder(folder, "tmp");
         newFile(folder, "tmp/excluded.template");
@@ -66,7 +65,7 @@ class FilesFinderTest {
     }
 
     @Test
-    void testExcludeTwo(@TempDir Path folder) throws IOException {
+    void testExcludeTwo(@TempDir Path folder) throws Exception {
         newFile(folder, "1.template");
         newFolder(folder, "tmp");
         newFile(folder, "tmp/excluded.template");
@@ -78,7 +77,7 @@ class FilesFinderTest {
     }
 
     @Test
-    void testExcludeEscape(@TempDir Path folder) throws IOException {
+    void testExcludeEscape(@TempDir Path folder) throws Exception {
         newFile(folder, "1.template");
         newFolder(folder, "tmp");
         newFile(folder, "tmp/excluded.template");
