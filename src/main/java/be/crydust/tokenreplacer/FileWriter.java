@@ -30,7 +30,7 @@ public class FileWriter implements Runnable {
     /**
      * FileWriter with custom encoding
      */
-    public FileWriter(String contents, Path path, Charset encoding) {
+    private FileWriter(String contents, Path path, Charset encoding) {
         Objects.requireNonNull(contents);
         Objects.requireNonNull(path);
         Objects.requireNonNull(encoding);
