@@ -37,7 +37,9 @@ public final class FileExtensionUtil {
         Objects.requireNonNull(newExtension);
         Objects.requireNonNull(path.getFileName());
         String originalFileName = path.getFileName().toString();
-        if (!originalFileName.contains(".")) {
+        int dotIndex = originalFileName.lastIndexOf('.');
+        if (dotIndex == -1
+            || dotIndex == originalFileName.length() - 1) {
             throw new IllegalArgumentException("path has no extension");
         }
         final String dot;
@@ -46,7 +48,7 @@ public final class FileExtensionUtil {
         } else {
             dot = ".";
         }
-        String newFileName = originalFileName.replaceFirst("\\.\\w+$", dot + newExtension);
+        String newFileName = originalFileName.substring(0, dotIndex) + dot + newExtension;
         return path.resolveSibling(newFileName);
     }
 }
