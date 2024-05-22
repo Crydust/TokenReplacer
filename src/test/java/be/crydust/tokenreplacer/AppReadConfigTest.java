@@ -10,7 +10,7 @@ import static org.hamcrest.Matchers.nullValue;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class AppTest {
+class AppReadConfigTest {
 
     @Test
     void testReadConfigNull() {
