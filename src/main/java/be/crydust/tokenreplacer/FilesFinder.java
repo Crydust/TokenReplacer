@@ -68,10 +68,12 @@ public class FilesFinder implements Callable<List<Path>> {
     }
 
     private static String escapeGlob(String pattern) {
-        return pattern.replaceAll("[\\[\\]!{}]", "\\\\$0");
+        return pattern.replaceAll("[\\[\\]{}]", "\\\\$0")
+                .replace(",", "[,]");
     }
 
-    private static String patternsToGlob(String[] patterns) {
+    /* package-private for test */
+    static String patternsToGlob(String[] patterns) {
         StringBuilder sb = new StringBuilder();
         int partCount = 0;
         for (String pattern : patterns) {
