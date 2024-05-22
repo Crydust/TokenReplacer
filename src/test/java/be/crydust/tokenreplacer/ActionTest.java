@@ -66,10 +66,6 @@ class ActionTest {
 
     @Test
     void testExclude(@TempDir Path folder) throws Exception {
-        newFolder(folder, "a");
-        newFolder(folder, "a/tmp");
-        newFolder(folder, "tmp");
-        newFolder(folder, "tmp/a");
         File file1 = newFile(folder, "1");
         File template1 = newFile(folder, "1.template");
         File file2 = newFile(folder, "tmp/2");
