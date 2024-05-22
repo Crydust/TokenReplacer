@@ -1,5 +1,6 @@
 package be.crydust.tokenreplacer;
 
+import static java.util.Map.Entry.comparingByKey;
 import static java.util.stream.Collectors.joining;
 
 import java.nio.file.Path;
@@ -10,7 +11,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 /**
- * The application configuration. A dumb value object.
+ * The application configuration. A dumb value object. The toString method returns a user-friendly summary.
  */
 public class Config {
 
@@ -88,6 +89,7 @@ public class Config {
     @Override
     public String toString() {
         String replacetokensSB = replacetokens.entrySet().stream()
+                .sorted(comparingByKey())
                 .map(it -> "\n    %s=%s".formatted(it.getKey(), it.getValue()))
                 .collect(joining(",", "{", "\n  }"));
 
@@ -101,7 +103,7 @@ public class Config {
                    endtoken=%s,
                    replacetokens=%s,
                    folder=%s,
-                   quiet=%s
+                   quiet=%s,
                    excludes=%s
                  }""", begintoken, endtoken, replacetokensSB, folder, quiet, excludesSB);
     }
