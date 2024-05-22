@@ -1,6 +1,8 @@
 package be.crydust.tokenreplacer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.aMapWithSize;
+import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.emptyArray;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
@@ -29,9 +31,7 @@ class AppReadConfigTest {
         assertThat(result.getEndtoken(), is("@"));
         assertThat(result.getFolder(), is(Paths.get(System.getProperty("user.dir"))));
         assertThat(result.isQuiet(), is(false));
-        assertThat(result, is(not(nullValue())));
-        assertThat(result.getReplacetokens().size(), is(1));
-        assertThat(result.getReplacetokens(), hasEntry("a", "b"));
+        assertThat(result.getReplacetokens(), both(aMapWithSize(1)).and(hasEntry("a", "b")));
         assertThat(result.getExcludes(), is(emptyArray()));
     }
 
