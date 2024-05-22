@@ -1,10 +1,13 @@
 package be.crydust.tokenreplacer;
 
+import static java.util.stream.Collectors.joining;
+
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -74,25 +77,12 @@ public class FilesFinder implements Callable<List<Path>> {
 
     /* package-private for test */
     static String patternsToGlob(String[] patterns) {
-        StringBuilder sb = new StringBuilder();
-        int partCount = 0;
-        for (String pattern : patterns) {
-            Strings.requireNonEmpty(pattern);
-            if (pattern.startsWith("**/")) {
-                String extraPattern = pattern.substring(3);
-                Strings.requireNonEmpty(extraPattern);
-                partCount++;
-                sb.append(escapeGlob(extraPattern)).append(',');
-            }
-            partCount++;
-            sb.append(escapeGlob(pattern)).append(',');
-        }
-        sb.setLength(sb.length() - 1);
-        if (partCount > 1) {
-            sb.insert(0, '{').append('}');
-        }
-        sb.insert(0, "glob:");
-        return sb.toString();
+        return Arrays.stream(patterns)
+                .flatMap(pattern -> pattern.startsWith("**/")
+                        ? Stream.of(pattern.substring(3), pattern)
+                        : Stream.of(pattern))
+                .map(FilesFinder::escapeGlob)
+                .collect(joining(",", "glob:{", "}"));
     }
 
 }

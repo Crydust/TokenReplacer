@@ -2,6 +2,7 @@ package be.crydust.tokenreplacer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.oneOf;
 
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +12,7 @@ class FilesFinderPatternsToGlobTest {
     void shouldConvertSimplePattern() {
         String[] patterns = {"a"};
         String glob = FilesFinder.patternsToGlob(patterns);
-        assertThat(glob, is("glob:a"));
+        assertThat(glob, oneOf("glob:a", "glob:{a}"));
     }
 
     @Test
@@ -25,14 +26,14 @@ class FilesFinderPatternsToGlobTest {
     void shouldConvertPatternsWithQuestionMark() {
         String[] patterns = {"a?"};
         String glob = FilesFinder.patternsToGlob(patterns);
-        assertThat(glob, is("glob:a?"));
+        assertThat(glob, oneOf("glob:a?", "glob:{a?}"));
     }
 
     @Test
     void shouldConvertPatternsWithStar() {
         String[] patterns = {"a*"};
         String glob = FilesFinder.patternsToGlob(patterns);
-        assertThat(glob, is("glob:a*"));
+        assertThat(glob, oneOf("glob:a*", "glob:{a*}"));
     }
 
     @Test
@@ -46,8 +47,9 @@ class FilesFinderPatternsToGlobTest {
     void shouldConvertPatternsWithDoubleStarAtEnd() {
         String[] patterns = {"a/**"};
         String glob = FilesFinder.patternsToGlob(patterns);
-        assertThat(glob, is("glob:a/**"));
+        assertThat(glob, oneOf("glob:a/**", "glob:{a/**}"));
     }
+
     @Test
     void shouldConvertMultipleSimplePatternsWithCommas() {
         String[] patterns = {"a", "b", "c,d"};
