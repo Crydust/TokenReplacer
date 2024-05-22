@@ -91,6 +91,7 @@ public final class App {
      * @return a valid configuration
      * @throws ReadConfigFailed when configuration is not valid or the excludes file could not be read.
      */
+    /* package-private for test */
     @Nonnull
     static Config readConfig(@Nonnull String[] args) throws ReadConfigFailed {
         Objects.requireNonNull(args);
