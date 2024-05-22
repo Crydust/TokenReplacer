@@ -1,5 +1,7 @@
 package be.crydust.tokenreplacer;
 
+import static java.util.Objects.requireNonNullElse;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,30 +94,23 @@ public final class App {
     @Nonnull
     static Config readConfig(@Nonnull String[] args) throws ReadConfigFailed {
         Objects.requireNonNull(args);
-        Config config = null;
         try {
             CommandLine commandLine = new DefaultParser().parse(App.OPTIONS, args);
             if (commandLine.hasOption("help")
                     || !(commandLine.hasOption("D") || commandLine.hasOption("replacetokens"))) {
                 throw new ReadConfigFailed("Provide at least one -D or -r argument.");
             }
-            Map<String, String> replacetokens = readReplacetokens(commandLine);
-            String[] excludes = commandLine.getOptionValues("exclude");
-            if (excludes == null) {
-                excludes = new String[0];
-            }
-            config = new Config(
+            return new Config(
                     commandLine.getOptionValue("begintoken", "@"),
                     commandLine.getOptionValue("endtoken", "@"),
-                    replacetokens,
+                    readReplacetokens(commandLine),
                     Paths.get(commandLine.getOptionValue("folder", System.getProperty("user.dir"))),
                     commandLine.hasOption("quiet"),
-                    excludes
+                    requireNonNullElse(commandLine.getOptionValues("exclude"), new String[0])
             );
         } catch (ParseException | IOException ex) {
             throw new ReadConfigFailed("Configuration not valid.", ex);
         }
-        return config;
     }
 
     @Nonnull
