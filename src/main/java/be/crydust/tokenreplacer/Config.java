@@ -11,8 +11,6 @@ import javax.annotation.Nonnull;
 
 /**
  * The application configuration. A dumb value object.
- *
- * @author kristof
  */
 public class Config {
 

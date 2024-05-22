@@ -16,8 +16,6 @@ import org.slf4j.LoggerFactory;
  * will create the resulting file by replacing the tokens within. Existing files
  * are replaced except if a *.readonly file is found. The replaced file is
  * renamed to *.bak.
- *
- * @author kristof
  */
 public class Action implements Runnable {
 

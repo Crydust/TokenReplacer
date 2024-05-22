@@ -7,9 +7,6 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
-/**
- * @author kristof
- */
 public class FileReader implements Callable<String> {
 
     // 1 megabyte

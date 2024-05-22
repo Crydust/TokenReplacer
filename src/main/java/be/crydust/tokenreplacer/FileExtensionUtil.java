@@ -8,8 +8,6 @@ import javax.annotation.Nonnull;
 /**
  * This class consists of {@code static} utility methods for operating on paths.
  * These utilities include a method for replacing the extension of a file.
- *
- * @author kristof
  */
 public final class FileExtensionUtil {
 

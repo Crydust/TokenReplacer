@@ -14,9 +14,6 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author kristof
- */
 public class FilesFinder implements Callable<List<Path>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FilesFinder.class);

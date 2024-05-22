@@ -10,9 +10,6 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author kristof
- */
 public class FileWriter implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileWriter.class);

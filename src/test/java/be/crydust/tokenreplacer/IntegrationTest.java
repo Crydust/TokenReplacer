@@ -14,9 +14,6 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-/**
- * @author kristof
- */
 class IntegrationTest {
 
     @Test

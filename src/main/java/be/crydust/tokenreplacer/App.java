@@ -27,8 +27,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Provides an entrypoint to our application. Turns the arguments from the
  * command line into a Config and delegates further work to the Action class.
- *
- * @author kristof
  */
 public final class App {
 
