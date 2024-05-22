@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
@@ -113,11 +113,16 @@ public final class App {
         }
     }
 
+    /* package-private for test */
     @Nonnull
-    private static Map<String, String> readReplacetokens(CommandLine commandLine) throws IOException {
-        Map<String, String> replacetokens = new HashMap<>();
+    static Map<String, String> readReplacetokens(CommandLine commandLine) throws IOException, ReadConfigFailed {
+        Map<String, String> replacetokens = new LinkedHashMap<>();
         if (commandLine.hasOption("replacetokens")) {
-            Path replacetokensPath = Paths.get(commandLine.getOptionValue("replacetokens", System.getProperty("user.dir")));
+            String replacetokensOption = commandLine.getOptionValue("replacetokens");
+            if (replacetokensOption == null) {
+                throw new ReadConfigFailed("Configuration not valid. Missing replacetokens option value.");
+            }
+            Path replacetokensPath = Paths.get(replacetokensOption);
             Properties properties = readProperties(replacetokensPath);
             for (String key : properties.stringPropertyNames()) {
                 replacetokens.put(key, properties.getProperty(key));
