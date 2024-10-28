@@ -1,9 +1,7 @@
 package be.crydust.tokenreplacer;
 
-import static be.crydust.tokenreplacer.TempDirHelper.newFile;
-import static be.crydust.tokenreplacer.TempDirHelper.newFolder;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -11,8 +9,10 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import static be.crydust.tokenreplacer.TempDirHelper.newFile;
+import static be.crydust.tokenreplacer.TempDirHelper.newFolder;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 class ActionTest {
 
@@ -88,6 +88,18 @@ class ActionTest {
         assertThat(Files.readString(file3.toPath()), is(""));
         assertThat(Files.readString(file4.toPath()), is(""));
         assertThat(Files.readString(file5.toPath()), is("A"));
+    }
+
+    @Test
+    void testTemplateTooLarge(@TempDir Path folder) throws Exception {
+        File file = newFile(folder, "a");
+        File template = newFile(folder, "a.template");
+        Files.writeString(template.toPath(), "c".repeat(1048576 + 1));
+        Action action = createSimpleAction(folder);
+
+        action.run();
+
+        assertThat(Files.exists(file.toPath()), is(false));
     }
 
 }
