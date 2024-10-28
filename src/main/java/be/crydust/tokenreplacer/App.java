@@ -171,7 +171,7 @@ public final class App {
         try {
             Config config = readConfig(args);
             System.out.println(config);
-            if (config.isQuiet() || readContinue()) {
+            if (config.quiet() || readContinue()) {
                 new Action(config).run();
                 System.out.println("Done.");
             } else {

@@ -35,8 +35,8 @@ public class Action implements Runnable {
      */
     public Action(@Nonnull Config config) {
         Objects.requireNonNull(config);
-        replacer = new TokenReplacer(config.getBegintoken(), config.getEndtoken(), config.getReplacetokens());
-        filesFinder = new FilesFinder(config.getFolder(), "**/*.template", config.getExcludes());
+        replacer = new TokenReplacer(config.begintoken(), config.endtoken(), config.replacetokens());
+        filesFinder = new FilesFinder(config.folder(), "**/*.template", config.excludes());
     }
 
     @Override

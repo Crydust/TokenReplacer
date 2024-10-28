@@ -27,12 +27,12 @@ class AppReadConfigTest {
         String[] args = "-D a=b".split(" ");
         Config result = App.readConfig(args);
         assertThat(result, is(not(nullValue())));
-        assertThat(result.getBegintoken(), is("@"));
-        assertThat(result.getEndtoken(), is("@"));
-        assertThat(result.getFolder(), is(Paths.get(System.getProperty("user.dir"))));
-        assertThat(result.isQuiet(), is(false));
-        assertThat(result.getReplacetokens(), both(aMapWithSize(1)).and(hasEntry("a", "b")));
-        assertThat(result.getExcludes(), is(emptyArray()));
+        assertThat(result.begintoken(), is("@"));
+        assertThat(result.endtoken(), is("@"));
+        assertThat(result.folder(), is(Paths.get(System.getProperty("user.dir"))));
+        assertThat(result.quiet(), is(false));
+        assertThat(result.replacetokens(), both(aMapWithSize(1)).and(hasEntry("a", "b")));
+        assertThat(result.excludes(), is(emptyArray()));
     }
 
     @Test
@@ -40,7 +40,7 @@ class AppReadConfigTest {
         String[] args = "-D a=b -exclude **/tmp/**".split(" ");
         Config result = App.readConfig(args);
         assertThat(result, is(not(nullValue())));
-        assertThat(result.getExcludes(), is(new String[]{
+        assertThat(result.excludes(), is(new String[]{
                 "**/tmp/**"
         }));
     }
@@ -50,7 +50,7 @@ class AppReadConfigTest {
         String[] args = "-D a=b -exclude **/tmp/** -exclude **/0,1,2.zzz".split(" ");
         Config result = App.readConfig(args);
         assertThat(result, is(not(nullValue())));
-        assertThat(result.getExcludes(), is(new String[]{
+        assertThat(result.excludes(), is(new String[]{
                 "**/tmp/**", "**/0,1,2.zzz"
         }));
     }
