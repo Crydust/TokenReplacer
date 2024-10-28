@@ -10,7 +10,7 @@ import static java.util.regex.Matcher.quoteReplacement;
 import static java.util.regex.Pattern.quote;
 import static java.util.stream.Collectors.joining;
 
-public class TokenReplacer {
+public final class TokenReplacer {
 
     private final String begintoken;
     private final String endtoken;

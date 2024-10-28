@@ -35,8 +35,12 @@ public final class FileExtensionUtil {
     public static Path replaceExtension(@Nonnull Path path, @Nonnull String newExtension) {
         Objects.requireNonNull(path);
         Objects.requireNonNull(newExtension);
-        Objects.requireNonNull(path.getFileName());
-        String originalFileName = path.getFileName().toString();
+        final Path fileName = path.getFileName();
+        if (fileName == null) {
+            throw new IllegalArgumentException("fileName is null");
+        }
+        // replaced by the above to keep spotbugs happy: Objects.requireNonNull(fileName);
+        String originalFileName = fileName.toString();
         int dotIndex = originalFileName.lastIndexOf('.');
         if (dotIndex == -1
             || dotIndex == originalFileName.length() - 1) {
