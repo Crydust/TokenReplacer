@@ -4,7 +4,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,21 +27,22 @@ public class Action implements Runnable {
     // 1 megabyte
     private static final long MAX_SIZE = 1048576;
     private static final Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
-    private final Config config;
+    private final TokenReplacer replacer;
+    private final FilesFinder filesFinder;
 
     /**
      * @param config a valid configuration
      */
     public Action(@Nonnull Config config) {
         Objects.requireNonNull(config);
-        this.config = config;
+        replacer = new TokenReplacer(config.getBegintoken(), config.getEndtoken(), config.getReplacetokens());
+        filesFinder = new FilesFinder(config.getFolder(), "**/*.template", config.getExcludes());
     }
 
     @Override
     public void run() {
         try {
-            TokenReplacer replacer = new TokenReplacer(config.getBegintoken(), config.getEndtoken(), config.getReplacetokens());
-            List<Path> templates = new FilesFinder(config.getFolder(), "**/*.template", config.getExcludes()).call();
+            List<Path> templates = filesFinder.call();
             for (Path template : templates) {
                 Path file = FileExtensionUtil.replaceExtension(template, "");
                 if (Files.exists(file)) {
