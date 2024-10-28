@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
 
-public class FilesFinder implements Supplier<List<Path>> {
+public final class FilesFinder implements Supplier<List<Path>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FilesFinder.class);
 
@@ -78,7 +78,7 @@ public class FilesFinder implements Supplier<List<Path>> {
     static String patternsToGlob(String[] patterns) {
         return Arrays.stream(patterns)
                 .flatMap(pattern -> pattern.startsWith("**/")
-                        ? Stream.of(pattern.substring(3), pattern)
+                        ? Stream.of(pattern.substring("**/".length()), pattern)
                         : Stream.of(pattern))
                 .map(FilesFinder::escapeGlob)
                 .collect(joining(",", "glob:{", "}"));
