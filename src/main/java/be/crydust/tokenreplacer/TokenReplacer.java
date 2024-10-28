@@ -3,10 +3,8 @@ package be.crydust.tokenreplacer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static java.util.regex.Matcher.quoteReplacement;
 import static java.util.regex.Pattern.quote;
