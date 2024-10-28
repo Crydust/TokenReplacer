@@ -67,7 +67,7 @@ public class FilesFinder implements Callable<List<Path>> {
             System.err.println(ex.getMessage());
             LOGGER.error(null, ex);
         }
-        return Collections.emptyList();
+        return List.of();
     }
 
     private static String escapeGlob(String pattern) {
