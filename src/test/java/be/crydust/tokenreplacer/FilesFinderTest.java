@@ -19,7 +19,7 @@ class FilesFinderTest {
     @Test
     void testEmpty(@TempDir Path folder) {
         FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[0]);
-        List<Path> files = cut.call();
+        List<Path> files = cut.get();
         assertThat(files, is(empty()));
     }
 
@@ -27,7 +27,7 @@ class FilesFinderTest {
     void testOneFile(@TempDir Path folder) throws Exception {
         newFile(folder, "a.template");
         FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[0]);
-        List<Path> files = cut.call();
+        List<Path> files = cut.get();
         assertThat(files, containsInAnyOrder(folder.resolve("a.template")));
     }
 
@@ -37,7 +37,7 @@ class FilesFinderTest {
         File subFolder = newFolder(folder);
         new File(subFolder, "b.template").createNewFile();
         FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[0]);
-        List<Path> files = cut.call();
+        List<Path> files = cut.get();
         assertThat(files, containsInAnyOrder(
                 folder.resolve("a.template"),
                 folder.resolve(subFolder.toPath().resolve("b.template"))));
@@ -49,7 +49,7 @@ class FilesFinderTest {
         newFile(folder, "tmp/2.template");
         newFile(folder, "xxx/3.template");
         FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[0]);
-        List<Path> files = cut.call();
+        List<Path> files = cut.get();
         assertThat(files, containsInAnyOrder(
                 folder.resolve("1.template"),
                 folder.resolve("tmp/2.template"),
@@ -63,7 +63,7 @@ class FilesFinderTest {
         newFile(folder, "tmp/excluded.template");
         newFile(folder, "xxx/2.template");
         FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[]{"**/tmp/**"});
-        List<Path> files = cut.call();
+        List<Path> files = cut.get();
         assertThat(files, containsInAnyOrder(
                 folder.resolve("1.template"),
                 folder.resolve("xxx/2.template")
@@ -76,7 +76,7 @@ class FilesFinderTest {
         newFile(folder, "tmp/excluded.template");
         newFile(folder, "xxx/excluded.template");
         FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[]{"**/tmp/**", "**/xxx/**"});
-        List<Path> files = cut.call();
+        List<Path> files = cut.get();
         assertThat(files, containsInAnyOrder(folder.resolve("1.template")));
     }
 
@@ -87,7 +87,7 @@ class FilesFinderTest {
         newFile(folder, "a[]!{},b/excluded.template");
         newFile(folder, "comma,comma/excluded.template");
         FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[]{"**/tmp/**", "**/a[]!{},b/**", "**/comma,comma/**"});
-        List<Path> files = cut.call();
+        List<Path> files = cut.get();
         assertThat(files, containsInAnyOrder(folder.resolve("1.template")));
     }
 
@@ -95,7 +95,7 @@ class FilesFinderTest {
     void shouldFindFileWithComma(@TempDir Path folder) throws Exception {
         newFile(folder, "comma,comma.template");
         FilesFinder cut = new FilesFinder(folder, "**/comma,comma.template", new String[0]);
-        List<Path> files = cut.call();
+        List<Path> files = cut.get();
         assertThat(files, containsInAnyOrder(folder.resolve("comma,comma.template")));
     }
 

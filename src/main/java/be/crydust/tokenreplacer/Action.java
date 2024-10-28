@@ -42,7 +42,7 @@ public class Action implements Runnable {
     @Override
     public void run() {
         try {
-            List<Path> templates = filesFinder.call();
+            List<Path> templates = filesFinder.get();
             for (Path template : templates) {
                 Path file = FileExtensionUtil.replaceExtension(template, "");
                 if (Files.exists(file)) {
