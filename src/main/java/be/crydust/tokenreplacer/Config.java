@@ -1,15 +1,12 @@
 package be.crydust.tokenreplacer;
 
-import static be.crydust.tokenreplacer.Strings.requireNonEmpty;
-import static java.util.Map.Entry.comparingByKey;
-import static java.util.stream.Collectors.joining;
-
+import javax.annotation.Nonnull;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Objects;
 
-import javax.annotation.Nonnull;
+import static java.util.Map.Entry.comparingByKey;
+import static java.util.stream.Collectors.joining;
 
 /**
  * The application configuration. A dumb value object. The toString method returns a user-friendly summary.
