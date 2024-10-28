@@ -6,6 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +43,7 @@ class ActionTest {
         new FileWriter("unchanged", file.toPath()).run();
         new FileWriter("@a@", template.toPath()).run();
         createSimpleAction(folder).run();
-        assertThat(new FileReader(file.toPath()).call(), is("A"));
+        assertThat(Files.readString(file.toPath()), is("A"));
     }
 
     @Test
@@ -53,7 +54,7 @@ class ActionTest {
         new FileWriter("unchanged", file.toPath()).run();
         new FileWriter("@a@", template.toPath()).run();
         createSimpleAction(folder).run();
-        assertThat(new FileReader(file.toPath()).call(), is("unchanged"));
+        assertThat(Files.readString(file.toPath()), is("unchanged"));
     }
 
     @Test
@@ -82,11 +83,11 @@ class ActionTest {
         new FileWriter("@a@", template4.toPath()).run();
         new FileWriter("@a@", template5.toPath()).run();
         createActionWithExclude(folder, "**/tmp/**").run();
-        assertThat(new FileReader(file1.toPath()).call(), is("A"));
-        assertThat(new FileReader(file2.toPath()).call(), is(""));
-        assertThat(new FileReader(file3.toPath()).call(), is(""));
-        assertThat(new FileReader(file4.toPath()).call(), is(""));
-        assertThat(new FileReader(file5.toPath()).call(), is("A"));
+        assertThat(Files.readString(file1.toPath()), is("A"));
+        assertThat(Files.readString(file2.toPath()), is(""));
+        assertThat(Files.readString(file3.toPath()), is(""));
+        assertThat(Files.readString(file4.toPath()), is(""));
+        assertThat(Files.readString(file5.toPath()), is("A"));
     }
 
 }

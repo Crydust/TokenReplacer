@@ -1,8 +1,7 @@
 package be.crydust.tokenreplacer;
 
-import static be.crydust.tokenreplacer.TempDirHelper.newFile;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -11,8 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import static be.crydust.tokenreplacer.TempDirHelper.newFile;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 class IntegrationTest {
 
@@ -21,7 +21,7 @@ class IntegrationTest {
         String input = "Lorem ipsum";
         Path a = newFile(folder, "a").toPath();
         new FileWriter(input, a).run();
-        String output = new FileReader(a).call();
+        String output = Files.readString(a);
         assertThat(output, is(input));
     }
 
@@ -38,7 +38,7 @@ class IntegrationTest {
         String replaced = replacer.replace(input);
         Path a = newFile(folder, "a").toPath();
         new FileWriter(replaced, a).run();
-        String output = new FileReader(a).call();
+        String output = Files.readString(a);
         assertThat(output, is(expected));
     }
 
@@ -59,14 +59,14 @@ class IntegrationTest {
         for (Path template : templates) {
             Path file = FileExtensionUtil.replaceExtension(template, "");
             if (Files.exists(file)) {
-                String fileContents = new FileReader(file).call();
+                String fileContents = Files.readString(file);
                 Path backupFile = FileExtensionUtil.replaceExtension(template, ".bak");
                 new FileWriter(fileContents, backupFile).run();
             }
-            String templateContents = new FileReader(template).call();
+            String templateContents = Files.readString(template);
             new FileWriter(replacer.replace(templateContents), file).run();
         }
-        String output = new FileReader(folder.resolve("a")).call();
+        String output = Files.readString(folder.resolve("a"));
 
         assertThat(output, is(expected));
     }

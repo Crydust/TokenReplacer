@@ -1,5 +1,7 @@
 package be.crydust.tokenreplacer;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -11,6 +13,9 @@ import javax.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 /**
  * The business logic of the application. Will search for *.template files. Then
  * will create the resulting file by replacing the tokens within. Existing files
@@ -20,6 +25,9 @@ import org.slf4j.LoggerFactory;
 public class Action implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Action.class);
+    // 1 megabyte
+    private static final long MAX_SIZE = 1048576;
+    private static final Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
     private final Config config;
 
     /**
@@ -48,13 +56,12 @@ public class Action implements Runnable {
                         continue;
                     }
                     Path backupFile = FileExtensionUtil.replaceExtension(template, ".bak");
-                    Files.move(file, backupFile,
-                            StandardCopyOption.ATOMIC_MOVE,
-                            // TODO KN should we add this? needs a test
-                            // StandardCopyOption.COPY_ATTRIBUTES,
-                            StandardCopyOption.REPLACE_EXISTING);
+                    Files.move(file, backupFile, ATOMIC_MOVE, REPLACE_EXISTING);
                 }
-                String templateContents = new FileReader(template).call();
+                if (Files.size(template) > MAX_SIZE) {
+                    throw new RuntimeException("file is too large to read");
+                }
+                String templateContents = Files.readString(template, DEFAULT_ENCODING);
                 new FileWriter(replacer.replace(templateContents), file).run();
                 System.out.printf("Wrote %s%n", file);
             }
