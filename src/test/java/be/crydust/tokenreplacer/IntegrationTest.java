@@ -20,7 +20,7 @@ class IntegrationTest {
     void testWriteAndRead(@TempDir Path folder) throws Exception {
         String input = "Lorem ipsum";
         Path a = newFile(folder, "a").toPath();
-        new FileWriter(input, a).run();
+        Files.writeString(a, input);
         String output = Files.readString(a);
         assertThat(output, is(input));
     }
@@ -37,7 +37,7 @@ class IntegrationTest {
         TokenReplacer replacer = new TokenReplacer(begintoken, endtoken, replacetokens);
         String replaced = replacer.replace(input);
         Path a = newFile(folder, "a").toPath();
-        new FileWriter(replaced, a).run();
+        Files.writeString(a, replaced);
         String output = Files.readString(a);
         assertThat(output, is(expected));
     }
@@ -53,7 +53,7 @@ class IntegrationTest {
         replacetokens.put("b", "ipsum");
         File aTemplate = newFile(folder, "a.template");
 
-        new FileWriter(input, aTemplate.toPath()).run();
+        Files.writeString(aTemplate.toPath(), input);
         TokenReplacer replacer = new TokenReplacer(begintoken, endtoken, replacetokens);
         List<Path> templates = new FilesFinder(folder, "**/*.template", new String[0]).call();
         for (Path template : templates) {
@@ -61,10 +61,10 @@ class IntegrationTest {
             if (Files.exists(file)) {
                 String fileContents = Files.readString(file);
                 Path backupFile = FileExtensionUtil.replaceExtension(template, ".bak");
-                new FileWriter(fileContents, backupFile).run();
+                Files.writeString(backupFile, fileContents);
             }
             String templateContents = Files.readString(template);
-            new FileWriter(replacer.replace(templateContents), file).run();
+            Files.writeString(file, replacer.replace(templateContents));
         }
         String output = Files.readString(folder.resolve("a"));
 

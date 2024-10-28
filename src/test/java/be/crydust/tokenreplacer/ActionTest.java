@@ -40,8 +40,8 @@ class ActionTest {
     void testNormal(@TempDir Path folder) throws Exception {
         File file = newFile(folder, "a");
         File template = newFile(folder, "a.template");
-        new FileWriter("unchanged", file.toPath()).run();
-        new FileWriter("@a@", template.toPath()).run();
+        Files.writeString(file.toPath(), "unchanged");
+        Files.writeString(template.toPath(), "@a@");
         createSimpleAction(folder).run();
         assertThat(Files.readString(file.toPath()), is("A"));
     }
@@ -51,8 +51,8 @@ class ActionTest {
         File file = newFile(folder, "a");
         File template = newFile(folder, "a.template");
         newFile(folder, "a.readonly");
-        new FileWriter("unchanged", file.toPath()).run();
-        new FileWriter("@a@", template.toPath()).run();
+        Files.writeString(file.toPath(), "unchanged");
+        Files.writeString(template.toPath(), "@a@");
         createSimpleAction(folder).run();
         assertThat(Files.readString(file.toPath()), is("unchanged"));
     }
@@ -77,11 +77,11 @@ class ActionTest {
         File template4 = newFile(folder, "tmp/a/4.template");
         File file5 = newFile(folder, "a/5");
         File template5 = newFile(folder, "a/5.template");
-        new FileWriter("@a@", template1.toPath()).run();
-        new FileWriter("@a@", template2.toPath()).run();
-        new FileWriter("@a@", template3.toPath()).run();
-        new FileWriter("@a@", template4.toPath()).run();
-        new FileWriter("@a@", template5.toPath()).run();
+        Files.writeString(template1.toPath(), "@a@");
+        Files.writeString(template2.toPath(), "@a@");
+        Files.writeString(template3.toPath(), "@a@");
+        Files.writeString(template4.toPath(), "@a@");
+        Files.writeString(template5.toPath(), "@a@");
         createActionWithExclude(folder, "**/tmp/**").run();
         assertThat(Files.readString(file1.toPath()), is("A"));
         assertThat(Files.readString(file2.toPath()), is(""));

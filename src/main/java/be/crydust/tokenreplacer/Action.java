@@ -62,7 +62,7 @@ public class Action implements Runnable {
                     throw new RuntimeException("file is too large to read");
                 }
                 String templateContents = Files.readString(template, DEFAULT_ENCODING);
-                new FileWriter(replacer.replace(templateContents), file).run();
+                Files.writeString(file, replacer.replace(templateContents), DEFAULT_ENCODING);
                 System.out.printf("Wrote %s%n", file);
             }
         } catch (Exception ex) {
