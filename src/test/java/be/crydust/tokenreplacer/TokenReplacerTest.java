@@ -16,7 +16,7 @@ class TokenReplacerTest {
     void testReplacetokensWithEmptyReplacetokens() {
         String begintoken = "<";
         String endtoken = ">";
-        Map<String, String> replacetokens = Collections.emptyMap();
+        Map<String, String> replacetokens = Map.of();
         assertThrows(IllegalArgumentException.class, () -> new TokenReplacer(begintoken, endtoken, replacetokens));
     }
 
