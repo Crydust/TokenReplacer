@@ -1,26 +1,28 @@
 package be.crydust.tokenreplacer;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException;
 
 class StringsTest {
     @Test
     void shouldThrowNullPointerExceptionWhenStringIsNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> Strings.requireNonEmpty(null));
+        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> Strings.requireNonEmpty(null));
     }
 
     @Test
     void shouldThrowIllegalArgumentExceptionWhenStringIsEmpty() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> Strings.requireNonEmpty(""));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> Strings.requireNonEmpty(""));
     }
 
     @Test
     void shouldDoNothingWhenStringIsNeitherNullNorEmpty() {
-        Strings.requireNonEmpty("foo");
+        assertThatNoException().isThrownBy(() -> Strings.requireNonEmpty("foo"));
     }
 
     @Test
     void shouldDoNothingWhenStringIsBlank() {
-        Strings.requireNonEmpty(" ");
+        assertThatNoException().isThrownBy(() -> Strings.requireNonEmpty(" "));
     }
 }

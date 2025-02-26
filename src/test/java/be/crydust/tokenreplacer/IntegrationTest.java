@@ -11,22 +11,21 @@ import java.util.List;
 import java.util.Map;
 
 import static be.crydust.tokenreplacer.TempDirHelper.newFile;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class IntegrationTest {
 
     @Test
-    void testWriteAndRead(@TempDir Path folder) throws Exception {
+    void writeAndRead(@TempDir Path folder) throws Exception {
         String input = "Lorem ipsum";
         Path a = newFile(folder, "a").toPath();
         Files.writeString(a, input);
         String output = Files.readString(a);
-        assertThat(output, is(input));
+        assertThat(output).isEqualTo(input);
     }
 
     @Test
-    void testReplaceWriteAndRead(@TempDir Path folder) throws Exception {
+    void replaceWriteAndRead(@TempDir Path folder) throws Exception {
         String expected = "Lorem ipsum";
         String begintoken = "@";
         String endtoken = "@";
@@ -39,11 +38,11 @@ class IntegrationTest {
         Path a = newFile(folder, "a").toPath();
         Files.writeString(a, replaced);
         String output = Files.readString(a);
-        assertThat(output, is(expected));
+        assertThat(output).isEqualTo(expected);
     }
 
     @Test
-    void testFindReadReplaceWriteAndRead(@TempDir Path folder) throws Exception {
+    void findReadReplaceWriteAndRead(@TempDir Path folder) throws Exception {
         String expected = "Lorem ipsum";
         String begintoken = "@";
         String endtoken = "@";
@@ -68,7 +67,7 @@ class IntegrationTest {
         }
         String output = Files.readString(folder.resolve("a"));
 
-        assertThat(output, is(expected));
+        assertThat(output).isEqualTo(expected);
     }
 
 }

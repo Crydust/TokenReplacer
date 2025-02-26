@@ -1,13 +1,12 @@
 package be.crydust.tokenreplacer;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 class FileExtensionUtilTest {
     @Test
@@ -17,7 +16,7 @@ class FileExtensionUtilTest {
 
         Path actual = FileExtensionUtil.replaceExtension(original, "csv");
 
-        assertThat(actual, Matchers.is(expected));
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -27,7 +26,7 @@ class FileExtensionUtilTest {
 
         Path actual = FileExtensionUtil.replaceExtension(original, ".csv");
 
-        assertThat(actual, Matchers.is(expected));
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -37,18 +36,18 @@ class FileExtensionUtilTest {
 
         Path actual = FileExtensionUtil.replaceExtension(original, "");
 
-        assertThat(actual, Matchers.is(expected));
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void shouldThrowWhenFileDoesNotHaveExtension() {
         Path original = Paths.get("c:/temp/numbers");
-        assertThrows(IllegalArgumentException.class, () -> FileExtensionUtil.replaceExtension(original, "csv"));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> FileExtensionUtil.replaceExtension(original, "csv"));
     }
 
     @Test
     void shouldThrowWhenFileHasEmptyExtension() {
         Path original = Paths.get("c:/temp/numbers.");
-        assertThrows(IllegalArgumentException.class, () -> FileExtensionUtil.replaceExtension(original, "csv"));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> FileExtensionUtil.replaceExtension(original, "csv"));
     }
 }
