@@ -42,12 +42,16 @@ class FileExtensionUtilTest {
     @Test
     void shouldThrowWhenFileDoesNotHaveExtension() {
         Path original = Paths.get("c:/temp/numbers");
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> FileExtensionUtil.replaceExtension(original, "csv"));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> FileExtensionUtil.replaceExtension(original, "csv"))
+                .withMessage("path has no extension");
     }
 
     @Test
     void shouldThrowWhenFileHasEmptyExtension() {
         Path original = Paths.get("c:/temp/numbers.");
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> FileExtensionUtil.replaceExtension(original, "csv"));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> FileExtensionUtil.replaceExtension(original, "csv"))
+                .withMessage("path has no extension");
     }
 }

@@ -35,7 +35,9 @@ class FilesFinderTest {
         new File(subFolder, "b.template").createNewFile();
         FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[0]);
         List<Path> files = cut.get();
-        assertThat(files).containsExactlyInAnyOrder(folder.resolve("a.template"), folder.resolve(subFolder.toPath().resolve("b.template")));
+        assertThat(files).containsExactlyInAnyOrder(
+                folder.resolve("a.template"),
+                folder.resolve(subFolder.toPath().resolve("b.template")));
     }
 
     @Test
@@ -45,7 +47,10 @@ class FilesFinderTest {
         newFile(folder, "xxx/3.template");
         FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[0]);
         List<Path> files = cut.get();
-        assertThat(files).containsExactlyInAnyOrder(folder.resolve("1.template"), folder.resolve("tmp/2.template"), folder.resolve("xxx/3.template"));
+        assertThat(files).containsExactlyInAnyOrder(
+                folder.resolve("1.template"),
+                folder.resolve("tmp/2.template"),
+                folder.resolve("xxx/3.template"));
     }
 
     @Test
@@ -55,7 +60,9 @@ class FilesFinderTest {
         newFile(folder, "xxx/2.template");
         FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[]{"**/tmp/**"});
         List<Path> files = cut.get();
-        assertThat(files).containsExactlyInAnyOrder(folder.resolve("1.template"), folder.resolve("xxx/2.template"));
+        assertThat(files).containsExactlyInAnyOrder(
+                folder.resolve("1.template"),
+                folder.resolve("xxx/2.template"));
     }
 
     @Test

@@ -17,7 +17,7 @@ class FilesFinderPatternsToGlobTest {
     void shouldConvertMultipleSimplePatterns() {
         String[] patterns = {"a", "b"};
         String glob = FilesFinder.patternsToGlob(patterns);
-        assertThat(glob).isEqualTo("glob:{a,b}");
+        assertThat(glob).isIn("glob:{a,b}");
     }
 
     @Test
@@ -38,7 +38,7 @@ class FilesFinderPatternsToGlobTest {
     void shouldConvertPatternsWithDoubleStarAtStart() {
         String[] patterns = {"**/a"};
         String glob = FilesFinder.patternsToGlob(patterns);
-        assertThat(glob).isEqualTo("glob:{a,**/a}");
+        assertThat(glob).isIn("glob:{a,**/a}");
     }
 
     @Test
@@ -52,7 +52,7 @@ class FilesFinderPatternsToGlobTest {
     void shouldConvertMultipleSimplePatternsWithCommas() {
         String[] patterns = {"a", "b", "c,d"};
         String glob = FilesFinder.patternsToGlob(patterns);
-        assertThat(glob).isEqualTo("glob:{a,b,c[,]d}");
+        assertThat(glob).isIn("glob:{a,b,c[,]d}");
     }
 
 }
