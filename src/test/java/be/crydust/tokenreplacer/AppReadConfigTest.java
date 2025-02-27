@@ -32,11 +32,20 @@ class AppReadConfigTest {
         softly.assertThat(result.endtoken()).isEqualTo("@");
         softly.assertThat(result.folder()).isEqualTo(Paths.get(System.getProperty("user.dir")));
         softly.assertThat(result.quiet()).isEqualTo(false);
-        softly.assertThat(result.replacetokens()).containsExactly(entry("a", "b"));
+        softly.assertThat(result.replacetokens()).hasSize(1).containsEntry("a", "b");
         softly.assertThat(result.excludes()).isEmpty();
         softly.assertAll();
 
         // alternatives
+        SoftAssertions.assertSoftly(softly2 -> {
+            softly2.assertThat(result).isNotNull();
+            softly2.assertThat(result.begintoken()).isEqualTo("@");
+            softly2.assertThat(result.endtoken()).isEqualTo("@");
+            softly2.assertThat(result.folder()).isEqualTo(Paths.get(System.getProperty("user.dir")));
+            softly2.assertThat(result.quiet()).isEqualTo(false);
+            softly2.assertThat(result.replacetokens()).containsExactly(entry("a", "b"));
+            softly2.assertThat(result.excludes()).isEmpty();
+        });
         assertThat(result)
                 .returns("@", Config::begintoken)
                 .returns("@", Config::endtoken)
@@ -79,12 +88,12 @@ class AppReadConfigTest {
                 );
         assertThat(result)
                 .satisfies(
-                        arg -> assertThat(arg.begintoken()).isEqualTo( "@"),
-                        arg -> assertThat(arg.endtoken()).isEqualTo( "@"),
-                        arg -> assertThat(arg.replacetokens()).isEqualTo( Map.of("a", "b")),
-                        arg -> assertThat(arg.folder()).isEqualTo( Paths.get(System.getProperty("user.dir"))),
-                        arg -> assertThat(arg.quiet()).isEqualTo( false),
-                        arg -> assertThat(arg.excludes()).isEqualTo( new String[0])
+                        arg -> assertThat(arg.begintoken()).isEqualTo("@"),
+                        arg -> assertThat(arg.endtoken()).isEqualTo("@"),
+                        arg -> assertThat(arg.replacetokens()).containsExactlyInAnyOrderEntriesOf(Map.of("a", "b")),
+                        arg -> assertThat(arg.folder()).isEqualTo(Paths.get(System.getProperty("user.dir"))),
+                        arg -> assertThat(arg.quiet()).isFalse(),
+                        arg -> assertThat(arg.excludes()).isEqualTo(new String[0])
                 );
     }
 

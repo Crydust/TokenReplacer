@@ -27,14 +27,24 @@ class AppReadReplacetokensTest {
         Map<String, String> replacetokens = App.readReplacetokens(commandLine);
 
         assertThat(replacetokens)
+                .hasSize(3)
                 .satisfies(
-                        arg -> assertThat(arg).hasSize(3),
                         arg -> assertThat(arg).containsEntry("a", "b"),
                         arg -> assertThat(arg).containsEntry("c", "d"),
                         arg -> assertThat(arg).containsEntry("e", "f")
                 );
 
         // alternatives
+        assertThat(replacetokens)
+                .hasSize(3)
+                .containsEntry("a", "b")
+                .containsEntry("c", "d")
+                .containsEntry("e", "f");
+        assertThat(replacetokens).containsExactlyInAnyOrderEntriesOf(Map.of(
+                "a", "b",
+                "c", "d",
+                "e", "f"
+        ));
         assertThat(replacetokens).containsOnly(
                 entry("a", "b"),
                 entry("c", "d"),
@@ -63,6 +73,16 @@ class AppReadReplacetokensTest {
                 );
 
         // alternatives
+        assertThat(replacetokens)
+                .hasSize(3)
+                .containsEntry("a", "b")
+                .containsEntry("c", "d")
+                .containsEntry("e", "f");
+        assertThat(replacetokens).containsExactlyInAnyOrderEntriesOf(Map.of(
+                "a", "b",
+                "c", "d",
+                "e", "f"
+        ));
         assertThat(replacetokens).containsOnly(
                 entry("a", "b"),
                 entry("c", "d"),
@@ -96,6 +116,18 @@ class AppReadReplacetokensTest {
                 );
 
         // alternatives
+        assertThat(replacetokens)
+                .hasSize(4)
+                .containsEntry("a", "b")
+                .containsEntry("c", "override d")
+                .containsEntry("e", "f")
+                .containsEntry("g", "add h");
+        assertThat(replacetokens).containsExactlyInAnyOrderEntriesOf(Map.of(
+                "a", "b",
+                "c", "override d",
+                "e", "f",
+                "g", "add h"
+        ));
         assertThat(replacetokens).containsOnly(
                 entry("a", "b"),
                 entry("c", "override d"),
