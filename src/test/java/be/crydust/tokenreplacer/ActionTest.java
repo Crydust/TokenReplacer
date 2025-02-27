@@ -107,13 +107,21 @@ class ActionTest {
     @Test
     void templateTooLarge(@TempDir Path folder) throws Exception {
         File file = newFile(folder, "a");
+        Files.writeString(file.toPath(), "original");
         File template = newFile(folder, "a.template");
         Files.writeString(template.toPath(), "c".repeat(1048576 + 1));
         Action action = createSimpleAction(folder);
 
         action.run();
 
-        assertThat(Files.exists(file.toPath())).isEqualTo(false);
+        assertAll(
+                () -> assertThat(file).doesNotExist(),
+                () -> assertThat(folder.resolve("a.bak")).hasContent("original"),
+                () -> assertThat(folder)
+                        .isDirectoryNotContaining("glob:**/a")
+                        .isDirectoryContaining("glob:**/a.bak")
+                        .isDirectoryContaining("glob:**/a.template")
+        );
     }
 
 }
