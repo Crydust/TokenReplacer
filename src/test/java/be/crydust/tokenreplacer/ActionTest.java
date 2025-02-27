@@ -7,7 +7,6 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
 
 import static be.crydust.tokenreplacer.TempDirHelper.newFile;
@@ -20,8 +19,7 @@ class ActionTest {
     private static Action createSimpleAction(Path folder) {
         String begintoken = "@";
         String endtoken = "@";
-        Map<String, String> replacetokens = new HashMap<>();
-        replacetokens.put("a", "A");
+        Map<String, String> replacetokens = Map.of("a", "A");
         boolean quiet = true;
         Config config = new Config(begintoken, endtoken, replacetokens, folder, quiet, new String[0]);
         return new Action(config);
@@ -30,8 +28,7 @@ class ActionTest {
     private static Action createActionWithExclude(Path folder, String exclude) {
         String begintoken = "@";
         String endtoken = "@";
-        Map<String, String> replacetokens = new HashMap<>();
-        replacetokens.put("a", "A");
+        Map<String, String> replacetokens = Map.of("a", "A");
         boolean quiet = true;
         Config config = new Config(begintoken, endtoken, replacetokens, folder, quiet, new String[]{exclude});
         return new Action(config);
@@ -44,7 +41,7 @@ class ActionTest {
         Files.writeString(file.toPath(), "unchanged");
         Files.writeString(template.toPath(), "@a@");
         createSimpleAction(folder).run();
-        assertThat(Files.readString(file.toPath())).isEqualTo("A");
+        assertThat(file).hasContent("A");
     }
 
     @Test
@@ -55,7 +52,7 @@ class ActionTest {
         Files.writeString(file.toPath(), "unchanged");
         Files.writeString(template.toPath(), "@a@");
         createSimpleAction(folder).run();
-        assertThat(Files.readString(file.toPath())).isEqualTo("unchanged");
+        assertThat(file).hasContent("unchanged");
     }
 
     @Test
@@ -96,11 +93,11 @@ class ActionTest {
 
         // alternatives
         assertAll(
-                () -> assertThat(Files.readString(file1.toPath())).isEqualTo("A"),
-                () -> assertThat(Files.readString(file2.toPath())).isEmpty(),
-                () -> assertThat(Files.readString(file3.toPath())).isEmpty(),
-                () -> assertThat(Files.readString(file4.toPath())).isEmpty(),
-                () -> assertThat(Files.readString(file5.toPath())).isEqualTo("A")
+                () -> assertThat(file1).hasContent("A"),
+                () -> assertThat(file2).isEmpty(),
+                () -> assertThat(file3).isEmpty(),
+                () -> assertThat(file4).isEmpty(),
+                () -> assertThat(file5).hasContent("A")
         );
     }
 

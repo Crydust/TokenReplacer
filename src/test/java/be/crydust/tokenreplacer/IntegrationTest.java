@@ -6,7 +6,6 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,9 +29,9 @@ class IntegrationTest {
         String begintoken = "@";
         String endtoken = "@";
         String input = "@a@ @b@";
-        Map<String, String> replacetokens = new HashMap<>();
-        replacetokens.put("a", "Lorem");
-        replacetokens.put("b", "ipsum");
+        Map<String, String> replacetokens = Map.of(
+                "a", "Lorem",
+                "b", "ipsum");
         TokenReplacer replacer = new TokenReplacer(begintoken, endtoken, replacetokens);
         String replaced = replacer.replace(input);
         Path a = newFile(folder, "a").toPath();
@@ -47,9 +46,9 @@ class IntegrationTest {
         String begintoken = "@";
         String endtoken = "@";
         String input = "@a@ @b@";
-        Map<String, String> replacetokens = new HashMap<>();
-        replacetokens.put("a", "Lorem");
-        replacetokens.put("b", "ipsum");
+        Map<String, String> replacetokens = Map.of(
+                "a", "Lorem",
+                "b", "ipsum");
         File aTemplate = newFile(folder, "a.template");
 
         Files.writeString(aTemplate.toPath(), input);

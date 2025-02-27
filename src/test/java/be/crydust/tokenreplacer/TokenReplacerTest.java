@@ -2,7 +2,6 @@ package be.crydust.tokenreplacer;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,8 +22,7 @@ class TokenReplacerTest {
     void replacetokensWithNoMatches() {
         String begintoken = "<";
         String endtoken = ">";
-        Map<String, String> replacetokens = new HashMap<>();
-        replacetokens.put("DATE", "today");
+        Map<String, String> replacetokens = Map.of("DATE", "today");
         String input = "Lorem ipsum";
         String expected = "Lorem ipsum";
         TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
@@ -36,8 +34,7 @@ class TokenReplacerTest {
     void replacetokensWithOneMatch() {
         String begintoken = "<";
         String endtoken = ">";
-        Map<String, String> replacetokens = new HashMap<>();
-        replacetokens.put("DATE", "today");
+        Map<String, String> replacetokens = Map.of("DATE", "today");
         String input = "Lorem <DATE> ipsum";
         String expected = "Lorem today ipsum";
         TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
@@ -49,8 +46,7 @@ class TokenReplacerTest {
     void replacetokensWithMatchAtStartMiddleEnd() {
         String begintoken = "<";
         String endtoken = ">";
-        Map<String, String> replacetokens = new HashMap<>();
-        replacetokens.put("DATE", "today");
+        Map<String, String> replacetokens = Map.of("DATE", "today");
         String input = "<DATE> Lorem <DATE> ipsum <DATE>";
         String expected = "today Lorem today ipsum today";
         TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
@@ -62,8 +58,7 @@ class TokenReplacerTest {
     void replacetokensWithWierdCharacters() {
         String begintoken = "<";
         String endtoken = ">";
-        Map<String, String> replacetokens = new HashMap<>();
-        replacetokens.put("²&é\"'(§è!çà)-^$ùµ,;:=<>'", "today");
+        Map<String, String> replacetokens = Map.of("²&é\"'(§è!çà)-^$ùµ,;:=<>'", "today");
         String input = "<²&é\"'(§è!çà)-^$ùµ,;:=<>'> Lorem <²&é\"'(§è!çà)-^$ùµ,;:=<>'> ipsum <²&é\"'(§è!çà)-^$ùµ,;:=<>'>";
         String expected = "today Lorem today ipsum today";
         TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
@@ -75,12 +70,12 @@ class TokenReplacerTest {
     void replacetokensWithMultipleKeys() {
         String begintoken = "<";
         String endtoken = ">";
-        Map<String, String> replacetokens = new HashMap<>();
-        replacetokens.put("a", "A");
-        replacetokens.put("b", "B");
-        replacetokens.put("c", "C");
-        replacetokens.put("d", "D");
-        replacetokens.put("e", "E");
+        Map<String, String> replacetokens = Map.of(
+                "a", "A",
+                "b", "B",
+                "c", "C",
+                "d", "D",
+                "e", "E");
         String input = "<a> Lorem <b> ipsum <c>";
         String expected = "A Lorem B ipsum C";
         TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
@@ -92,12 +87,12 @@ class TokenReplacerTest {
     void replacetokensWithMultipleKeysAndEqualBeginEndToken() {
         String begintoken = "@";
         String endtoken = "@";
-        Map<String, String> replacetokens = new HashMap<>();
-        replacetokens.put("a", "A");
-        replacetokens.put("b", "B");
-        replacetokens.put("c", "C");
-        replacetokens.put("d", "D");
-        replacetokens.put("e", "E");
+        Map<String, String> replacetokens = Map.of(
+                "a", "A",
+                "b", "B",
+                "c", "C",
+                "d", "D",
+                "e", "E");
         String input = "@a@ Lorem @b@ ipsum @c@";
         String expected = "A Lorem B ipsum C";
         TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
@@ -109,12 +104,11 @@ class TokenReplacerTest {
     void replacetokensWithDotTokens() {
         String begintoken = ".";
         String endtoken = ".";
-        Map<String, String> replacetokens = new HashMap<>();
-        replacetokens.put("a", "A");
-        replacetokens.put("b", "B");
-        replacetokens.put("c", "C");
-        replacetokens.put("d", "D");
-        replacetokens.put("e", "E");
+        Map<String, String> replacetokens = Map.of("a", "A",
+                "b", "B",
+                "c", "C",
+                "d", "D",
+                "e", "E");
         String input = ".a. Lorem .b. ipsum .c.";
         String expected = "A Lorem B ipsum C";
         TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
@@ -126,10 +120,10 @@ class TokenReplacerTest {
     void replacetokensWithBackslashAndDollar() {
         String begintoken = "<";
         String endtoken = ">";
-        Map<String, String> replacetokens = new HashMap<>();
-        replacetokens.put("a", "a\\a");
-        replacetokens.put("b", "b$b");
-        replacetokens.put("c", "c<c");
+        Map<String, String> replacetokens = Map.of(
+                "a", "a\\a",
+                "b", "b$b",
+                "c", "c<c");
         String input = "<a> Lorem <b> ipsum <c>";
         String expected = "a\\a Lorem b$b ipsum c<c";
         TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
