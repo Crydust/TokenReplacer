@@ -15,7 +15,8 @@ class TokenReplacerTest {
         String begintoken = "<";
         String endtoken = ">";
         Map<String, String> replacetokens = Map.of();
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new TokenReplacer(begintoken, endtoken, replacetokens));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> new TokenReplacer(begintoken, endtoken, replacetokens));
     }
 
     @Test

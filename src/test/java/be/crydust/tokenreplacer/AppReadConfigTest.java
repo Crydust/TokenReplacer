@@ -17,7 +17,19 @@ class AppReadConfigTest {
     @Test
     void readConfigNull() {
         String[] args = new String[0];
-        assertThatExceptionOfType(ReadConfigFailed.class).isThrownBy(() -> App.readConfig(args));
+        assertThatExceptionOfType(ReadConfigFailed.class)
+                .isThrownBy(() -> App.readConfig(args))
+                .withMessage("Provide at least one -D or -r argument.");
+    }
+
+    @Test
+    void readConfigWithMissingArgument() {
+        String[] args = {"-b"};
+        assertThatExceptionOfType(ReadConfigFailed.class)
+                .isThrownBy(() -> App.readConfig(args))
+                .withMessage("Configuration not valid.")
+                .havingCause()
+                .withMessage("Missing argument for option: b");
     }
 
     @Test
