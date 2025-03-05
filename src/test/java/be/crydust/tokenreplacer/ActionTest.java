@@ -83,15 +83,6 @@ class ActionTest {
 
         createActionWithExclude(folder, "**/tmp/**").run();
 
-        SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(Files.readString(file1.toPath())).isEqualTo("A");
-        softly.assertThat(Files.readString(file2.toPath())).isEmpty();
-        softly.assertThat(Files.readString(file3.toPath())).isEmpty();
-        softly.assertThat(Files.readString(file4.toPath())).isEmpty();
-        softly.assertThat(Files.readString(file5.toPath())).isEqualTo("A");
-        softly.assertAll();
-
-        // alternatives
         assertAll(
                 () -> assertThat(file1).hasContent("A"),
                 () -> assertThat(file2).isEmpty(),
