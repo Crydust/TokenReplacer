@@ -94,7 +94,7 @@ public final class App {
     static Config readConfig(@Nonnull String[] args) throws ReadConfigFailed {
         requireNonNull(args);
         try {
-            CommandLine commandLine = new DefaultParser().parse(App.OPTIONS, args);
+            CommandLine commandLine = new DefaultParser().parse(OPTIONS, args);
             if (commandLine.hasOption("help")
                     || !(commandLine.hasOption("D") || commandLine.hasOption("replacetokens"))) {
                 throw new ReadConfigFailed("Provide at least one -D or -r argument.");
@@ -153,7 +153,7 @@ public final class App {
 
     private static void printHelp() {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("java -jar tokenreplacer.jar", App.OPTIONS);
+        formatter.printHelp("java -jar tokenreplacer.jar", OPTIONS);
     }
 
     private static boolean readContinue() {
