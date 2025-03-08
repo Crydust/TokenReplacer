@@ -2,7 +2,6 @@ package be.crydust.tokenreplacer;
 
 import javax.annotation.Nonnull;
 import java.nio.file.Path;
-import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 

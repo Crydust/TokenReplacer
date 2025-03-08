@@ -1,7 +1,5 @@
 package be.crydust.tokenreplacer;
 
-import java.util.Objects;
-
 import static java.util.Objects.requireNonNull;
 
 public final class Strings {

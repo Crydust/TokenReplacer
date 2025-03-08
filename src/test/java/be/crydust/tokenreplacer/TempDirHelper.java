@@ -3,7 +3,6 @@ package be.crydust.tokenreplacer;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
