@@ -4,6 +4,8 @@ import javax.annotation.Nonnull;
 import java.nio.file.Path;
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * This class consists of {@code static} utility methods for operating on paths.
  * These utilities include a method for replacing the extension of a file.
@@ -32,8 +34,8 @@ public final class FileExtensionUtil {
      */
     @Nonnull
     public static Path replaceExtension(@Nonnull Path path, @Nonnull String newExtension) {
-        Objects.requireNonNull(path);
-        Objects.requireNonNull(newExtension);
+        requireNonNull(path);
+        requireNonNull(newExtension);
         final Path fileName = path.getFileName();
         if (fileName == null) {
             throw new IllegalArgumentException("fileName is null");

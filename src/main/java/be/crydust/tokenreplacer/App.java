@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.Scanner;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElse;
 
 /**
@@ -92,7 +93,7 @@ public final class App {
     /* package-private for test */
     @Nonnull
     static Config readConfig(@Nonnull String[] args) throws ReadConfigFailed {
-        Objects.requireNonNull(args);
+        requireNonNull(args);
         try {
             CommandLine commandLine = new DefaultParser().parse(App.OPTIONS, args);
             if (commandLine.hasOption("help")

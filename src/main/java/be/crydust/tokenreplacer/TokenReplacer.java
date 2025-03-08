@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static be.crydust.tokenreplacer.Strings.requireNonEmpty;
+import static java.util.Objects.requireNonNull;
 import static java.util.regex.Matcher.quoteReplacement;
 import static java.util.regex.Pattern.quote;
 import static java.util.stream.Collectors.joining;
@@ -19,14 +21,14 @@ public final class TokenReplacer {
     private Pattern pattern;
 
     public TokenReplacer(String begintoken, String endtoken, Map<String, String> replacetokens) {
-        Strings.requireNonEmpty(begintoken);
-        Strings.requireNonEmpty(endtoken);
-        Objects.requireNonNull(replacetokens);
+        requireNonEmpty(begintoken);
+        requireNonEmpty(endtoken);
+        requireNonNull(replacetokens);
         if (replacetokens.isEmpty()) {
             throw new IllegalArgumentException("replacetokens");
         }
         for (String key : replacetokens.keySet()) {
-            Strings.requireNonEmpty(key);
+            requireNonEmpty(key);
         }
         this.begintoken = begintoken;
         this.endtoken = endtoken;

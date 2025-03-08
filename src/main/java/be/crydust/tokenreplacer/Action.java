@@ -14,6 +14,7 @@ import java.util.Objects;
 
 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElse;
 
 /**
@@ -43,7 +44,7 @@ public final class Action implements Runnable {
 
     /* package-private for test */
     Action(@Nonnull Config config, PrintStream out, PrintStream err, Logger log) {
-        Objects.requireNonNull(config);
+        requireNonNull(config);
         replacer = new TokenReplacer(config.begintoken(), config.endtoken(), config.replacetokens());
         filesFinder = new FilesFinder(config.folder(), "**/*.template", config.excludes());
         this.out = requireNonNullElse(out, System.out);
