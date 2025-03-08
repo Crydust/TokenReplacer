@@ -1,9 +1,9 @@
 package be.crydust.tokenreplacer;
 
-import java.nio.file.Path;
-import java.util.Objects;
-
 import javax.annotation.Nonnull;
+import java.nio.file.Path;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * This class consists of {@code static} utility methods for operating on paths.
@@ -21,7 +21,7 @@ public final class FileExtensionUtil {
      * <b>Usage Examples:</b>
      * Suppose we want to replace a file extension from "txt" to "csv":
      * <pre>
-     *     Path source = Paths.get("c:/temp/numbers.txt");
+     *     Path source = Path.of("c:/temp/numbers.txt");
      *     Path destination = FileExtensionUtil.replaceExtension(source, "csv");
      *     // returns c:/temp/numbers.csv
      * </pre>
@@ -33,8 +33,8 @@ public final class FileExtensionUtil {
      */
     @Nonnull
     public static Path replaceExtension(@Nonnull Path path, @Nonnull String newExtension) {
-        Objects.requireNonNull(path);
-        Objects.requireNonNull(newExtension);
+        requireNonNull(path);
+        requireNonNull(newExtension);
         final Path fileName = path.getFileName();
         if (fileName == null) {
             throw new IllegalArgumentException("fileName is null");

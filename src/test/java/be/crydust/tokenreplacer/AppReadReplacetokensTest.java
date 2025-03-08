@@ -9,9 +9,11 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Properties;
 
-import static java.util.Map.entry;
 import static java.util.Objects.requireNonNull;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.aMapWithSize;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.hasEntry;
 
 class AppReadReplacetokensTest {
 
@@ -26,30 +28,12 @@ class AppReadReplacetokensTest {
 
         Map<String, String> replacetokens = App.readReplacetokens(commandLine);
 
-        assertThat(replacetokens)
-                .hasSize(3)
-                .satisfies(
-                        arg -> assertThat(arg).containsEntry("a", "b"),
-                        arg -> assertThat(arg).containsEntry("c", "d"),
-                        arg -> assertThat(arg).containsEntry("e", "f")
-                );
-
-        // alternatives
-        assertThat(replacetokens)
-                .hasSize(3)
-                .containsEntry("a", "b")
-                .containsEntry("c", "d")
-                .containsEntry("e", "f");
-        assertThat(replacetokens).containsExactlyInAnyOrderEntriesOf(Map.of(
-                "a", "b",
-                "c", "d",
-                "e", "f"
+        assertThat(replacetokens, allOf(
+                aMapWithSize(3),
+                hasEntry("a", "b"),
+                hasEntry("c", "d"),
+                hasEntry("e", "f")
         ));
-        assertThat(replacetokens).containsOnly(
-                entry("a", "b"),
-                entry("c", "d"),
-                entry("e", "f")
-        );
     }
 
     @Test
@@ -64,30 +48,12 @@ class AppReadReplacetokensTest {
 
         Map<String, String> replacetokens = App.readReplacetokens(commandLine);
 
-        assertThat(replacetokens)
-                .satisfies(
-                        arg -> assertThat(arg).hasSize(3),
-                        arg -> assertThat(arg).containsEntry("a", "b"),
-                        arg -> assertThat(arg).containsEntry("c", "d"),
-                        arg -> assertThat(arg).containsEntry("e", "f")
-                );
-
-        // alternatives
-        assertThat(replacetokens)
-                .hasSize(3)
-                .containsEntry("a", "b")
-                .containsEntry("c", "d")
-                .containsEntry("e", "f");
-        assertThat(replacetokens).containsExactlyInAnyOrderEntriesOf(Map.of(
-                "a", "b",
-                "c", "d",
-                "e", "f"
+        assertThat(replacetokens, allOf(
+                aMapWithSize(3),
+                hasEntry("a", "b"),
+                hasEntry("c", "d"),
+                hasEntry("e", "f")
         ));
-        assertThat(replacetokens).containsOnly(
-                entry("a", "b"),
-                entry("c", "d"),
-                entry("e", "f")
-        );
     }
 
     @Test
@@ -106,34 +72,13 @@ class AppReadReplacetokensTest {
 
         Map<String, String> replacetokens = App.readReplacetokens(commandLine);
 
-        assertThat(replacetokens)
-                .satisfies(
-                        arg -> assertThat(arg).hasSize(4),
-                        arg -> assertThat(arg).containsEntry("a", "b"),
-                        arg -> assertThat(arg).containsEntry("c", "override d"),
-                        arg -> assertThat(arg).containsEntry("e", "f"),
-                        arg -> assertThat(arg).containsEntry("g", "add h")
-                );
-
-        // alternatives
-        assertThat(replacetokens)
-                .hasSize(4)
-                .containsEntry("a", "b")
-                .containsEntry("c", "override d")
-                .containsEntry("e", "f")
-                .containsEntry("g", "add h");
-        assertThat(replacetokens).containsExactlyInAnyOrderEntriesOf(Map.of(
-                "a", "b",
-                "c", "override d",
-                "e", "f",
-                "g", "add h"
+        assertThat(replacetokens, allOf(
+                aMapWithSize(4),
+                hasEntry("a", "b"),
+                hasEntry("c", "override d"),
+                hasEntry("e", "f"),
+                hasEntry("g", "add h")
         ));
-        assertThat(replacetokens).containsOnly(
-                entry("a", "b"),
-                entry("c", "override d"),
-                entry("e", "f"),
-                entry("g", "add h")
-        );
     }
 
     private final static class CommandLineStub extends CommandLine {

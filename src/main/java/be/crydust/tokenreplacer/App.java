@@ -1,22 +1,5 @@
 package be.crydust.tokenreplacer;
 
-import static java.util.Objects.requireNonNullElse;
-
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.Scanner;
-
-import javax.annotation.Nonnull;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -25,6 +8,21 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nonnull;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Scanner;
+
+import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElse;
 
 /**
  * Provides an entrypoint to our application. Turns the arguments from the
@@ -94,7 +92,7 @@ public final class App {
     /* package-private for test */
     @Nonnull
     static Config readConfig(@Nonnull String[] args) throws ReadConfigFailed {
-        Objects.requireNonNull(args);
+        requireNonNull(args);
         try {
             CommandLine commandLine = new DefaultParser().parse(App.OPTIONS, args);
             if (commandLine.hasOption("help")
@@ -105,7 +103,7 @@ public final class App {
                     commandLine.getOptionValue("begintoken", "@"),
                     commandLine.getOptionValue("endtoken", "@"),
                     readReplacetokens(commandLine),
-                    Paths.get(commandLine.getOptionValue("folder", System.getProperty("user.dir"))),
+                    Path.of(commandLine.getOptionValue("folder", System.getProperty("user.dir"))),
                     commandLine.hasOption("quiet"),
                     requireNonNullElse(commandLine.getOptionValues("exclude"), new String[0])
             );
@@ -123,7 +121,7 @@ public final class App {
             if (replacetokensOption == null) {
                 throw new ReadConfigFailed("Configuration not valid. Missing replacetokens option value.");
             }
-            Path replacetokensPath = Paths.get(replacetokensOption);
+            Path replacetokensPath = Path.of(replacetokensOption);
             Properties properties = readProperties(replacetokensPath);
             for (String key : properties.stringPropertyNames()) {
                 replacetokens.put(key, properties.getProperty(key));

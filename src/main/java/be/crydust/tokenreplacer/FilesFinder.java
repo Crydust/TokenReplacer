@@ -10,10 +10,10 @@ import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
 public final class FilesFinder implements Supplier<List<Path>> {
@@ -37,9 +37,9 @@ public final class FilesFinder implements Supplier<List<Path>> {
      * FilesFinder with only one multiple include patterns
      */
     private FilesFinder(Path path, String[] includes, String[] excludes) {
-        Objects.requireNonNull(path);
-        Objects.requireNonNull(includes);
-        Objects.requireNonNull(excludes);
+        requireNonNull(path);
+        requireNonNull(includes);
+        requireNonNull(excludes);
         if (includes.length == 0) {
             throw new IllegalArgumentException("includes should not be empty");
         }

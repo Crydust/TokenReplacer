@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 class ConfigTest {
 
@@ -22,7 +23,7 @@ class ConfigTest {
 
         String userFriendlyString = config.toString();
 
-        assertThat(userFriendlyString).isEqualTo("""
+        assertThat(userFriendlyString, is("""
                 Config{
                   begintoken=@,
                   endtoken=@,
@@ -31,7 +32,7 @@ class ConfigTest {
                   folder=c:\\temp,
                   quiet=true,
                   excludes=[]
-                }""");
+                }"""));
     }
 
     @Test
@@ -49,7 +50,7 @@ class ConfigTest {
 
         String userFriendlyString = config.toString();
 
-        assertThat(userFriendlyString).isEqualTo("""
+        assertThat(userFriendlyString, is("""
                 Config{
                   begintoken=@,
                   endtoken=@,
@@ -58,7 +59,7 @@ class ConfigTest {
                   folder=c:\\temp,
                   quiet=true,
                   excludes=[**/with \\, comma/**]
-                }""");
+                }"""));
     }
 
     @Test
@@ -78,7 +79,7 @@ class ConfigTest {
 
         String userFriendlyString = config.toString();
 
-        assertThat(userFriendlyString).isEqualTo("""
+        assertThat(userFriendlyString, is("""
                 Config{
                   begintoken=@,
                   endtoken=@,
@@ -90,7 +91,7 @@ class ConfigTest {
                   folder=c:\\temp,
                   quiet=true,
                   excludes=[]
-                }""");
+                }"""));
     }
 
     @Test
@@ -113,7 +114,7 @@ class ConfigTest {
 
         String userFriendlyString = config.toString();
 
-        assertThat(userFriendlyString).isEqualTo("""
+        assertThat(userFriendlyString, is("""
                 Config{
                   begintoken=<,
                   endtoken=>,
@@ -124,7 +125,7 @@ class ConfigTest {
                   folder=c:\\temp,
                   quiet=false,
                   excludes=[**/tmp/**,**/temp/**,**/with \\, comma/**]
-                }""");
+                }"""));
     }
 
 }

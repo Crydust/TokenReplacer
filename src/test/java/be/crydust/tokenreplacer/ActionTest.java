@@ -1,37 +1,52 @@
 package be.crydust.tokenreplacer;
 
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
+import static be.crydust.tokenreplacer.ActionBuilder.anAction;
+import static be.crydust.tokenreplacer.FileHasContent.fileHasContent;
+import static be.crydust.tokenreplacer.PathHasContent.pathHasContent;
 import static be.crydust.tokenreplacer.TempDirHelper.newFile;
 import static be.crydust.tokenreplacer.TempDirHelper.newFolder;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.stringContainsInOrder;
+import static org.hamcrest.io.FileMatchers.aFileWithSize;
+import static org.hamcrest.io.FileMatchers.anExistingFile;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class ActionTest {
 
     private static Action createSimpleAction(Path folder) {
-        String begintoken = "@";
-        String endtoken = "@";
-        Map<String, String> replacetokens = Map.of("a", "A");
-        boolean quiet = true;
-        Config config = new Config(begintoken, endtoken, replacetokens, folder, quiet, new String[0]);
-        return new Action(config);
+        return anAction(folder)
+                .withBeginToken("@")
+                .withEndToken("@")
+                .withReplaceTokens(Map.of("a", "A"))
+                .withQuiet(true)
+                .build();
     }
 
     private static Action createActionWithExclude(Path folder, String exclude) {
-        String begintoken = "@";
-        String endtoken = "@";
-        Map<String, String> replacetokens = Map.of("a", "A");
-        boolean quiet = true;
-        Config config = new Config(begintoken, endtoken, replacetokens, folder, quiet, new String[]{exclude});
-        return new Action(config);
+        return anAction(folder)
+                .withBeginToken("@")
+                .withEndToken("@")
+                .withReplaceTokens(Map.of("a", "A"))
+                .withQuiet(true)
+                .withExcludes(exclude)
+                .build();
+    }
+
+    private static Action createActionWithOut(Path folder, PrintStream out) {
+        return anAction(folder)
+                .withOut(out)
+                .build();
     }
 
     @Test
@@ -40,8 +55,10 @@ class ActionTest {
         File template = newFile(folder, "a.template");
         Files.writeString(file.toPath(), "unchanged");
         Files.writeString(template.toPath(), "@a@");
+
         createSimpleAction(folder).run();
-        assertThat(file).hasContent("A");
+
+        assertThat(file, fileHasContent("A"));
     }
 
     @Test
@@ -51,16 +68,21 @@ class ActionTest {
         newFile(folder, "a.readonly");
         Files.writeString(file.toPath(), "unchanged");
         Files.writeString(template.toPath(), "@a@");
+
         createSimpleAction(folder).run();
-        assertThat(file).hasContent("unchanged");
+
+        assertThat(file, fileHasContent("unchanged"));
     }
 
     @Test
     void folderIntheWay(@TempDir Path folder) throws Exception {
-        Action cut = createSimpleAction(folder);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         newFolder(folder, "a");
         newFile(folder, "a.template");
-        cut.run();
+
+        createActionWithOut(folder, new PrintStream(baos)).run();
+
+        assertThat(baos.toString(), stringContainsInOrder("Skipped ", " (there is a directory with the same name)"));
     }
 
     @Test
@@ -83,21 +105,12 @@ class ActionTest {
 
         createActionWithExclude(folder, "**/tmp/**").run();
 
-        SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(Files.readString(file1.toPath())).isEqualTo("A");
-        softly.assertThat(Files.readString(file2.toPath())).isEmpty();
-        softly.assertThat(Files.readString(file3.toPath())).isEmpty();
-        softly.assertThat(Files.readString(file4.toPath())).isEmpty();
-        softly.assertThat(Files.readString(file5.toPath())).isEqualTo("A");
-        softly.assertAll();
-
-        // alternatives
         assertAll(
-                () -> assertThat(file1).hasContent("A"),
-                () -> assertThat(file2).isEmpty(),
-                () -> assertThat(file3).isEmpty(),
-                () -> assertThat(file4).isEmpty(),
-                () -> assertThat(file5).hasContent("A")
+                () -> assertThat(file1, fileHasContent("A")),
+                () -> assertThat(file2, aFileWithSize(0)),
+                () -> assertThat(file3, aFileWithSize(0)),
+                () -> assertThat(file4, aFileWithSize(0)),
+                () -> assertThat(file5, fileHasContent("A"))
         );
     }
 
@@ -107,17 +120,15 @@ class ActionTest {
         Files.writeString(file.toPath(), "original");
         File template = newFile(folder, "a.template");
         Files.writeString(template.toPath(), "c".repeat(1048576 + 1));
-        Action action = createSimpleAction(folder);
 
-        action.run();
+        createSimpleAction(folder).run();
 
         assertAll(
-                () -> assertThat(file).doesNotExist(),
-                () -> assertThat(folder.resolve("a.bak")).hasContent("original"),
-                () -> assertThat(folder)
-                        .isDirectoryNotContaining("glob:**/a")
-                        .isDirectoryContaining("glob:**/a.bak")
-                        .isDirectoryContaining("glob:**/a.template")
+                () -> assertThat(file, not(anExistingFile())),
+                () -> assertThat(folder.resolve("a.bak"), pathHasContent("original")),
+                () -> assertThat(folder.resolve("a").toFile(), not(anExistingFile())),
+                () -> assertThat(folder.resolve("a.bak").toFile(), anExistingFile()),
+                () -> assertThat(folder.resolve("a.template").toFile(), anExistingFile())
         );
     }
 

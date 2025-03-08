@@ -3,8 +3,9 @@ package be.crydust.tokenreplacer;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.UUID;
+
+import static java.util.Objects.requireNonNull;
 
 final class TempDirHelper {
 
@@ -13,8 +14,8 @@ final class TempDirHelper {
     }
 
     static File newFile(Path base, String fileName) throws Exception {
-        Objects.requireNonNull(base);
-        Objects.requireNonNull(fileName);
+        requireNonNull(base);
+        requireNonNull(fileName);
         Path path = base.resolve(fileName);
         if (!path.startsWith(base)) {
             throw new IllegalArgumentException("invalid fileName " + fileName);
@@ -28,13 +29,13 @@ final class TempDirHelper {
     }
 
     static File newFolder(Path base) throws Exception {
-        Objects.requireNonNull(base);
+        requireNonNull(base);
         return Files.createDirectories(base.resolve(UUID.randomUUID().toString())).toFile();
     }
 
     static File newFolder(Path base, String folderName) throws Exception {
-        Objects.requireNonNull(base);
-        Objects.requireNonNull(folderName);
+        requireNonNull(base);
+        requireNonNull(folderName);
         final Path path = base.resolve(folderName);
         if (!path.startsWith(base)) {
             throw new IllegalArgumentException("invalid folderName " + folderName);

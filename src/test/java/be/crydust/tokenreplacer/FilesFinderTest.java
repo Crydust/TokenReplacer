@@ -9,15 +9,17 @@ import java.util.List;
 
 import static be.crydust.tokenreplacer.TempDirHelper.newFile;
 import static be.crydust.tokenreplacer.TempDirHelper.newFolder;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
 
 class FilesFinderTest {
 
     @Test
-    void empty(@TempDir Path folder) {
+    void noFile(@TempDir Path folder) {
         FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[0]);
         List<Path> files = cut.get();
-        assertThat(files).isEmpty();
+        assertThat(files, empty());
     }
 
     @Test
@@ -25,7 +27,7 @@ class FilesFinderTest {
         newFile(folder, "a.template");
         FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[0]);
         List<Path> files = cut.get();
-        assertThat(files).containsExactlyInAnyOrder(folder.resolve("a.template"));
+        assertThat(files, containsInAnyOrder(folder.resolve("a.template")));
     }
 
     @Test
@@ -35,9 +37,9 @@ class FilesFinderTest {
         new File(subFolder, "b.template").createNewFile();
         FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[0]);
         List<Path> files = cut.get();
-        assertThat(files).containsExactlyInAnyOrder(
+        assertThat(files, containsInAnyOrder(
                 folder.resolve("a.template"),
-                folder.resolve(subFolder.toPath().resolve("b.template")));
+                folder.resolve(subFolder.toPath().resolve("b.template"))));
     }
 
     @Test
@@ -47,10 +49,11 @@ class FilesFinderTest {
         newFile(folder, "xxx/3.template");
         FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[0]);
         List<Path> files = cut.get();
-        assertThat(files).containsExactlyInAnyOrder(
+        assertThat(files, containsInAnyOrder(
                 folder.resolve("1.template"),
                 folder.resolve("tmp/2.template"),
-                folder.resolve("xxx/3.template"));
+                folder.resolve("xxx/3.template")
+        ));
     }
 
     @Test
@@ -60,9 +63,10 @@ class FilesFinderTest {
         newFile(folder, "xxx/2.template");
         FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[]{"**/tmp/**"});
         List<Path> files = cut.get();
-        assertThat(files).containsExactlyInAnyOrder(
+        assertThat(files, containsInAnyOrder(
                 folder.resolve("1.template"),
-                folder.resolve("xxx/2.template"));
+                folder.resolve("xxx/2.template")
+        ));
     }
 
     @Test
@@ -72,7 +76,7 @@ class FilesFinderTest {
         newFile(folder, "xxx/excluded.template");
         FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[]{"**/tmp/**", "**/xxx/**"});
         List<Path> files = cut.get();
-        assertThat(files).containsExactlyInAnyOrder(folder.resolve("1.template"));
+        assertThat(files, containsInAnyOrder(folder.resolve("1.template")));
     }
 
     @Test
@@ -83,7 +87,7 @@ class FilesFinderTest {
         newFile(folder, "comma,comma/excluded.template");
         FilesFinder cut = new FilesFinder(folder, "**/*.template", new String[]{"**/tmp/**", "**/a[]!{},b/**", "**/comma,comma/**"});
         List<Path> files = cut.get();
-        assertThat(files).containsExactlyInAnyOrder(folder.resolve("1.template"));
+        assertThat(files, containsInAnyOrder(folder.resolve("1.template")));
     }
 
     @Test
@@ -91,7 +95,7 @@ class FilesFinderTest {
         newFile(folder, "comma,comma.template");
         FilesFinder cut = new FilesFinder(folder, "**/comma,comma.template", new String[0]);
         List<Path> files = cut.get();
-        assertThat(files).containsExactlyInAnyOrder(folder.resolve("comma,comma.template"));
+        assertThat(files, containsInAnyOrder(folder.resolve("comma,comma.template")));
     }
 
 }

@@ -1,35 +1,38 @@
 package be.crydust.tokenreplacer;
 
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Paths;
-import java.util.Map;
+import java.nio.file.Path;
 
-import static java.util.Map.entry;
-import static org.assertj.core.api.Assertions.as;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
-import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
+import static be.crydust.tokenreplacer.CustomThrowableMatchers.hasCauseMessage;
+import static be.crydust.tokenreplacer.CustomThrowableMatchers.hasMessage;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.aMapWithSize;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.arrayContaining;
+import static org.hamcrest.Matchers.emptyArray;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AppReadConfigTest {
 
     @Test
     void readConfigNull() {
         String[] args = new String[0];
-        assertThatExceptionOfType(ReadConfigFailed.class)
-                .isThrownBy(() -> App.readConfig(args))
-                .withMessage("Provide at least one -D or -r argument.");
+        var e = assertThrows(ReadConfigFailed.class, () -> App.readConfig(args));
+        assertThat(e, hasMessage("Provide at least one -D or -r argument."));
     }
 
     @Test
     void readConfigWithMissingArgument() {
         String[] args = {"-b"};
-        assertThatExceptionOfType(ReadConfigFailed.class)
-                .isThrownBy(() -> App.readConfig(args))
-                .withMessage("Configuration not valid.")
-                .havingCause()
-                .withMessage("Missing argument for option: b");
+        var e = assertThrows(ReadConfigFailed.class, () -> App.readConfig(args));
+        assertThat(e, allOf(
+                hasMessage("Configuration not valid."),
+                hasCauseMessage("Missing argument for option: b")));
     }
 
     @Test
@@ -38,95 +41,29 @@ class AppReadConfigTest {
 
         Config result = App.readConfig(args);
 
-        SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(result).isNotNull();
-        softly.assertThat(result.begintoken()).isEqualTo("@");
-        softly.assertThat(result.endtoken()).isEqualTo("@");
-        softly.assertThat(result.folder()).isEqualTo(Paths.get(System.getProperty("user.dir")));
-        softly.assertThat(result.quiet()).isEqualTo(false);
-        softly.assertThat(result.replacetokens()).hasSize(1).containsEntry("a", "b");
-        softly.assertThat(result.excludes()).isEmpty();
-        softly.assertAll();
-
-        // alternatives
-        SoftAssertions.assertSoftly(softly2 -> {
-            softly2.assertThat(result).isNotNull();
-            softly2.assertThat(result.begintoken()).isEqualTo("@");
-            softly2.assertThat(result.endtoken()).isEqualTo("@");
-            softly2.assertThat(result.folder()).isEqualTo(Paths.get(System.getProperty("user.dir")));
-            softly2.assertThat(result.quiet()).isEqualTo(false);
-            softly2.assertThat(result.replacetokens()).containsExactly(entry("a", "b"));
-            softly2.assertThat(result.excludes()).isEmpty();
-        });
-        assertThat(result)
-                .returns("@", Config::begintoken)
-                .returns("@", Config::endtoken)
-                .returns(Paths.get(System.getProperty("user.dir")), Config::folder)
-                .returns(false, Config::quiet);
-        assertThat(result)
-                .usingRecursiveComparison()
-                .comparingOnlyFields(
-                        "begintoken",
-                        "endtoken",
-                        "replacetokens",
-                        "folder",
-                        "quiet",
-                        "excludes"
-                )
-                .isEqualTo(new Config(
-                        "@",
-                        "@",
-                        Map.of("a", "b"),
-                        Paths.get(System.getProperty("user.dir")),
-                        false,
-                        new String[0]
-                ));
-        assertThat(result)
-                .extracting(
-                        "begintoken",
-                        "endtoken",
-                        "replacetokens",
-                        "folder",
-                        "quiet",
-                        "excludes"
-                )
-                .containsExactly(
-                        "@",
-                        "@",
-                        Map.of("a", "b"),
-                        Paths.get(System.getProperty("user.dir")),
-                        false,
-                        new String[0]
-                );
-        assertThat(result)
-                .satisfies(
-                        arg -> assertThat(arg.begintoken()).isEqualTo("@"),
-                        arg -> assertThat(arg.endtoken()).isEqualTo("@"),
-                        arg -> assertThat(arg.replacetokens()).containsExactlyInAnyOrderEntriesOf(Map.of("a", "b")),
-                        arg -> assertThat(arg.folder()).isEqualTo(Paths.get(System.getProperty("user.dir"))),
-                        arg -> assertThat(arg.quiet()).isFalse(),
-                        arg -> assertThat(arg.excludes()).isEqualTo(new String[0])
-                );
+        assertAll(
+                () -> assertThat(result, notNullValue()),
+                () -> assertThat(result.begintoken(), is("@")),
+                () -> assertThat(result.endtoken(), is("@")),
+                () -> assertThat(result.folder(), is(Path.of(System.getProperty("user.dir")))),
+                () -> assertThat(result.quiet(), is(false)),
+                () -> assertThat(result.replacetokens(), allOf(aMapWithSize(1), hasEntry("a", "b"))),
+                () -> assertThat(result.excludes(), emptyArray())
+        );
     }
 
     @Test
     void readConfigIncludeAndExclude() throws Exception {
         String[] args = "-D a=b -exclude **/tmp/**".split(" ");
         Config result = App.readConfig(args);
-        assertThat(result.excludes()).containsExactly("**/tmp/**");
-
-        // alternatives
-        assertThat(result).extracting(Config::excludes, as(ARRAY)).containsExactly("**/tmp/**");
-        assertThat(result).extracting("excludes", as(ARRAY)).containsExactly("**/tmp/**");
-        assertThat(result).isNotNull()
-                .extracting(Config::excludes, as(ARRAY)).containsExactly("**/tmp/**");
+        assertThat(result.excludes(), arrayContaining("**/tmp/**"));
     }
 
     @Test
     void readConfigIncludeAndExcludeMultiple() throws Exception {
         String[] args = "-D a=b -exclude **/tmp/** -exclude **/0,1,2.zzz".split(" ");
         Config result = App.readConfig(args);
-        assertThat(result.excludes()).containsExactly("**/tmp/**", "**/0,1,2.zzz");
+        assertThat(result.excludes(), arrayContaining("**/tmp/**", "**/0,1,2.zzz"));
     }
 
 }
