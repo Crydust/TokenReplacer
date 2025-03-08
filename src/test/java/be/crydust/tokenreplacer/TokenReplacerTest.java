@@ -4,8 +4,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TokenReplacerTest {
 
@@ -14,8 +15,7 @@ class TokenReplacerTest {
         String begintoken = "<";
         String endtoken = ">";
         Map<String, String> replacetokens = Map.of();
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> new TokenReplacer(begintoken, endtoken, replacetokens));
+        assertThrows(IllegalArgumentException.class, () -> new TokenReplacer(begintoken, endtoken, replacetokens));
     }
 
     @Test
@@ -27,7 +27,7 @@ class TokenReplacerTest {
         String expected = "Lorem ipsum";
         TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
         String actual = cut.replace(input);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -39,7 +39,7 @@ class TokenReplacerTest {
         String expected = "Lorem today ipsum";
         TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
         String actual = cut.replace(input);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -51,7 +51,7 @@ class TokenReplacerTest {
         String expected = "today Lorem today ipsum today";
         TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
         String actual = cut.replace(input);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -63,7 +63,7 @@ class TokenReplacerTest {
         String expected = "today Lorem today ipsum today";
         TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
         String actual = cut.replace(input);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -80,7 +80,7 @@ class TokenReplacerTest {
         String expected = "A Lorem B ipsum C";
         TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
         String actual = cut.replace(input);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -97,14 +97,15 @@ class TokenReplacerTest {
         String expected = "A Lorem B ipsum C";
         TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
         String actual = cut.replace(input);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 
     @Test
     void replacetokensWithDotTokens() {
         String begintoken = ".";
         String endtoken = ".";
-        Map<String, String> replacetokens = Map.of("a", "A",
+        Map<String, String> replacetokens = Map.of(
+                "a", "A",
                 "b", "B",
                 "c", "C",
                 "d", "D",
@@ -113,7 +114,7 @@ class TokenReplacerTest {
         String expected = "A Lorem B ipsum C";
         TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
         String actual = cut.replace(input);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -128,6 +129,6 @@ class TokenReplacerTest {
         String expected = "a\\a Lorem b$b ipsum c<c";
         TokenReplacer cut = new TokenReplacer(begintoken, endtoken, replacetokens);
         String actual = cut.replace(input);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 }

@@ -5,8 +5,10 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static be.crydust.tokenreplacer.CustomThrowableMatchers.hasMessage;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FileExtensionUtilTest {
     @Test
@@ -16,7 +18,7 @@ class FileExtensionUtilTest {
 
         Path actual = FileExtensionUtil.replaceExtension(original, "csv");
 
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -26,7 +28,7 @@ class FileExtensionUtilTest {
 
         Path actual = FileExtensionUtil.replaceExtension(original, ".csv");
 
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -36,22 +38,20 @@ class FileExtensionUtilTest {
 
         Path actual = FileExtensionUtil.replaceExtension(original, "");
 
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 
     @Test
     void shouldThrowWhenFileDoesNotHaveExtension() {
         Path original = Paths.get("c:/temp/numbers");
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> FileExtensionUtil.replaceExtension(original, "csv"))
-                .withMessage("path has no extension");
+        var e = assertThrows(IllegalArgumentException.class, () -> FileExtensionUtil.replaceExtension(original, "csv"));
+        assertThat(e, hasMessage("path has no extension"));
     }
 
     @Test
     void shouldThrowWhenFileHasEmptyExtension() {
         Path original = Paths.get("c:/temp/numbers.");
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> FileExtensionUtil.replaceExtension(original, "csv"))
-                .withMessage("path has no extension");
+        var e = assertThrows(IllegalArgumentException.class, () -> FileExtensionUtil.replaceExtension(original, "csv"));
+        assertThat(e, hasMessage("path has no extension"));
     }
 }

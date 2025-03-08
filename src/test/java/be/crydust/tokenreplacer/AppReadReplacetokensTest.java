@@ -9,9 +9,11 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Properties;
 
-import static java.util.Map.entry;
 import static java.util.Objects.requireNonNull;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.aMapWithSize;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.hasEntry;
 
 class AppReadReplacetokensTest {
 
@@ -26,10 +28,11 @@ class AppReadReplacetokensTest {
 
         Map<String, String> replacetokens = App.readReplacetokens(commandLine);
 
-        assertThat(replacetokens).containsExactlyInAnyOrderEntriesOf(Map.of(
-                "a", "b",
-                "c", "d",
-                "e", "f"
+        assertThat(replacetokens, allOf(
+                aMapWithSize(3),
+                hasEntry("a", "b"),
+                hasEntry("c", "d"),
+                hasEntry("e", "f")
         ));
     }
 
@@ -45,10 +48,11 @@ class AppReadReplacetokensTest {
 
         Map<String, String> replacetokens = App.readReplacetokens(commandLine);
 
-        assertThat(replacetokens).containsExactlyInAnyOrderEntriesOf(Map.of(
-                "a", "b",
-                "c", "d",
-                "e", "f"
+        assertThat(replacetokens, allOf(
+                aMapWithSize(3),
+                hasEntry("a", "b"),
+                hasEntry("c", "d"),
+                hasEntry("e", "f")
         ));
     }
 
@@ -68,11 +72,12 @@ class AppReadReplacetokensTest {
 
         Map<String, String> replacetokens = App.readReplacetokens(commandLine);
 
-        assertThat(replacetokens).containsExactlyInAnyOrderEntriesOf(Map.of(
-                "a", "b",
-                "c", "override d",
-                "e", "f",
-                "g", "add h"
+        assertThat(replacetokens, allOf(
+                aMapWithSize(4),
+                hasEntry("a", "b"),
+                hasEntry("c", "override d"),
+                hasEntry("e", "f"),
+                hasEntry("g", "add h")
         ));
     }
 

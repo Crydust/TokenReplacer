@@ -2,33 +2,37 @@ package be.crydust.tokenreplacer;
 
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
-import static java.util.Map.entry;
-import static org.assertj.core.api.Assertions.as;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
-import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
+import static be.crydust.tokenreplacer.CustomThrowableMatchers.hasCauseMessage;
+import static be.crydust.tokenreplacer.CustomThrowableMatchers.hasMessage;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.aMapWithSize;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.arrayContaining;
+import static org.hamcrest.Matchers.emptyArray;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AppReadConfigTest {
 
     @Test
     void readConfigNull() {
         String[] args = new String[0];
-        assertThatExceptionOfType(ReadConfigFailed.class)
-                .isThrownBy(() -> App.readConfig(args))
-                .withMessage("Provide at least one -D or -r argument.");
+        var e = assertThrows(ReadConfigFailed.class, () -> App.readConfig(args));
+        assertThat(e, hasMessage("Provide at least one -D or -r argument."));
     }
 
     @Test
     void readConfigWithMissingArgument() {
         String[] args = {"-b"};
-        assertThatExceptionOfType(ReadConfigFailed.class)
-                .isThrownBy(() -> App.readConfig(args))
-                .withMessage("Configuration not valid.")
-                .havingCause()
-                .withMessage("Missing argument for option: b");
+        var e = assertThrows(ReadConfigFailed.class, () -> App.readConfig(args));
+        assertThat(e, allOf(
+                hasMessage("Configuration not valid."),
+                hasCauseMessage("Missing argument for option: b")));
     }
 
     @Test
@@ -38,13 +42,13 @@ class AppReadConfigTest {
         Config result = App.readConfig(args);
 
         assertAll(
-                () -> assertThat(result).isNotNull(),
-                () -> assertThat(result.begintoken()).isEqualTo("@"),
-                () -> assertThat(result.endtoken()).isEqualTo("@"),
-                () -> assertThat(result.folder()).isEqualTo(Paths.get(System.getProperty("user.dir"))),
-                () -> assertThat(result.quiet()).isEqualTo(false),
-                () -> assertThat(result.replacetokens()).containsExactly(entry("a", "b")),
-                () -> assertThat(result.excludes()).isEmpty()
+                () -> assertThat(result, notNullValue()),
+                () -> assertThat(result.begintoken(), is("@")),
+                () -> assertThat(result.endtoken(), is("@")),
+                () -> assertThat(result.folder(), is(Path.of(System.getProperty("user.dir")))),
+                () -> assertThat(result.quiet(), is(false)),
+                () -> assertThat(result.replacetokens(), allOf(aMapWithSize(1), hasEntry("a", "b"))),
+                () -> assertThat(result.excludes(), emptyArray())
         );
     }
 
@@ -52,14 +56,14 @@ class AppReadConfigTest {
     void readConfigIncludeAndExclude() throws Exception {
         String[] args = "-D a=b -exclude **/tmp/**".split(" ");
         Config result = App.readConfig(args);
-        assertThat(result.excludes()).containsExactly("**/tmp/**");
+        assertThat(result.excludes(), arrayContaining("**/tmp/**"));
     }
 
     @Test
     void readConfigIncludeAndExcludeMultiple() throws Exception {
         String[] args = "-D a=b -exclude **/tmp/** -exclude **/0,1,2.zzz".split(" ");
         Config result = App.readConfig(args);
-        assertThat(result.excludes()).containsExactly("**/tmp/**", "**/0,1,2.zzz");
+        assertThat(result.excludes(), arrayContaining("**/tmp/**", "**/0,1,2.zzz"));
     }
 
 }

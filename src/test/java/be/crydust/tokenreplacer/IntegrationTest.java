@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import static be.crydust.tokenreplacer.TempDirHelper.newFile;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 class IntegrationTest {
 
@@ -20,7 +21,7 @@ class IntegrationTest {
         Path a = newFile(folder, "a").toPath();
         Files.writeString(a, input);
         String output = Files.readString(a);
-        assertThat(output).isEqualTo(input);
+        assertThat(output, is(input));
     }
 
     @Test
@@ -37,7 +38,7 @@ class IntegrationTest {
         Path a = newFile(folder, "a").toPath();
         Files.writeString(a, replaced);
         String output = Files.readString(a);
-        assertThat(output).isEqualTo(expected);
+        assertThat(output, is(expected));
     }
 
     @Test
@@ -66,7 +67,7 @@ class IntegrationTest {
         }
         String output = Files.readString(folder.resolve("a"));
 
-        assertThat(output).isEqualTo(expected);
+        assertThat(output, is(expected));
     }
 
 }
