@@ -163,7 +163,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <linkXref>false</linkXref>
+                    <linkXRef>false</linkXRef>
                     <excludeFromFailureFile>exclude-pmd.properties</excludeFromFailureFile>
                 </configuration>
             </plugin>
