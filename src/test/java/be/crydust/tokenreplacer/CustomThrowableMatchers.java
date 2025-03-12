@@ -1,39 +1,31 @@
 package be.crydust.tokenreplacer;
 
 import org.hamcrest.FeatureMatcher;
+import org.hamcrest.Matcher;
 
 import static org.hamcrest.Matchers.equalTo;
 
 public final class CustomThrowableMatchers {
 
-    public static HasMessage hasMessage(String expected) {
-        return new HasMessage(expected);
+    private CustomThrowableMatchers() {
+        throw new UnsupportedOperationException("Utility class");
     }
 
-    public static HasCauseMessage hasCauseMessage(String expected) {
-        return new HasCauseMessage(expected);
+    public static Matcher<Throwable> hasMessage(String expectedMessage) {
+        return new FeatureMatcher<>(equalTo(expectedMessage), "an exception with message", "message") {
+            @Override
+            protected String featureValueOf(Throwable actual) {
+                return actual.getMessage();
+            }
+        };
     }
 
-    private static final class HasMessage extends FeatureMatcher<Throwable, String> {
-        public HasMessage(String expectedMessage) {
-            super(equalTo(expectedMessage), "message", "message");
-        }
-
-        @Override
-        protected String featureValueOf(Throwable actual) {
-            return actual.getMessage();
-        }
+    public static Matcher<Throwable> hasCauseMessage(String expectedMessage) {
+        return new FeatureMatcher<>(equalTo(expectedMessage), "an exception with cause message", "cause message") {
+            @Override
+            protected String featureValueOf(Throwable actual) {
+                return actual.getCause().getMessage();
+            }
+        };
     }
-
-    private static final class HasCauseMessage extends FeatureMatcher<Throwable, String> {
-        public HasCauseMessage(String expectedMessage) {
-            super(equalTo(expectedMessage), "cause message", "cause message");
-        }
-
-        @Override
-        protected String featureValueOf(Throwable actual) {
-            return actual.getCause().getMessage();
-        }
-    }
-
 }

@@ -11,8 +11,8 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import static be.crydust.tokenreplacer.ActionBuilder.anAction;
-import static be.crydust.tokenreplacer.FileHasContent.fileHasContent;
-import static be.crydust.tokenreplacer.PathHasContent.pathHasContent;
+import static be.crydust.tokenreplacer.CustomFileMatchers.fileHasContent;
+import static be.crydust.tokenreplacer.CustomFileMatchers.pathHasContent;
 import static be.crydust.tokenreplacer.TempDirHelper.newFile;
 import static be.crydust.tokenreplacer.TempDirHelper.newFolder;
 import static org.hamcrest.MatcherAssert.assertThat;

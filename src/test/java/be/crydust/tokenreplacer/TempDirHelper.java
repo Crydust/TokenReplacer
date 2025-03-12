@@ -10,7 +10,7 @@ import static java.util.Objects.requireNonNull;
 final class TempDirHelper {
 
     private TempDirHelper() {
-        //NOOP
+        throw new UnsupportedOperationException("Utility class");
     }
 
     static File newFile(Path base, String fileName) throws Exception {
