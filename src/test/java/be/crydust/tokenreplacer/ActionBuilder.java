@@ -62,6 +62,10 @@ public final class ActionBuilder {
         return this;
     }
 
+    public ActionBuilder withLoggingSpy(LoggingSpy loggingSpy) {
+        return loggingSpy.apply(this);
+    }
+
     public Action build() {
         return new Action(configBuilder.build(), out, err, log);
     }

@@ -3,9 +3,7 @@ package be.crydust.tokenreplacer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -16,36 +14,33 @@ import static be.crydust.tokenreplacer.CustomFileMatchers.pathHasContent;
 import static be.crydust.tokenreplacer.TempDirHelper.newFile;
 import static be.crydust.tokenreplacer.TempDirHelper.newFolder;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.stringContainsInOrder;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.io.FileMatchers.aFileWithSize;
 import static org.hamcrest.io.FileMatchers.anExistingFile;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class ActionTest {
 
-    private static Action createSimpleAction(Path folder) {
+    LoggingSpy loggingSpy = new LoggingSpy();
+
+    private Action createSimpleAction(Path folder) {
         return anAction(folder)
                 .withBeginToken("@")
                 .withEndToken("@")
                 .withReplaceTokens(Map.of("a", "A"))
                 .withQuiet(true)
+                .withLoggingSpy(loggingSpy)
                 .build();
     }
 
-    private static Action createActionWithExclude(Path folder, String exclude) {
+    private Action createActionWithExclude(Path folder, String exclude) {
         return anAction(folder)
                 .withBeginToken("@")
                 .withEndToken("@")
                 .withReplaceTokens(Map.of("a", "A"))
                 .withQuiet(true)
                 .withExcludes(exclude)
-                .build();
-    }
-
-    private static Action createActionWithOut(Path folder, PrintStream out) {
-        return anAction(folder)
-                .withOut(out)
+                .withLoggingSpy(loggingSpy)
                 .build();
     }
 
@@ -58,7 +53,10 @@ class ActionTest {
 
         createSimpleAction(folder).run();
 
-        assertThat(file, fileHasContent("A"));
+        assertAll(
+                () -> assertThat(file, fileHasContent("A")),
+                () -> assertThat(loggingSpy.out(), stringContainsInOrder("Wrote ", "a"))
+        );
     }
 
     @Test
@@ -71,18 +69,20 @@ class ActionTest {
 
         createSimpleAction(folder).run();
 
-        assertThat(file, fileHasContent("unchanged"));
+        assertAll(
+                () -> assertThat(file, fileHasContent("unchanged")),
+                () -> assertThat(loggingSpy.out(), stringContainsInOrder("Skipped ", "a (readonly)"))
+        );
     }
 
     @Test
-    void folderIntheWay(@TempDir Path folder) throws Exception {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    void folderInTheWay(@TempDir Path folder) throws Exception {
         newFolder(folder, "a");
         newFile(folder, "a.template");
 
-        createActionWithOut(folder, new PrintStream(baos)).run();
+        createSimpleAction(folder).run();
 
-        assertThat(baos.toString(), stringContainsInOrder("Skipped ", " (there is a directory with the same name)"));
+        assertThat(loggingSpy.out(), stringContainsInOrder("Skipped ", " (there is a directory with the same name)"));
     }
 
     @Test
@@ -110,7 +110,11 @@ class ActionTest {
                 () -> assertThat(file2, aFileWithSize(0)),
                 () -> assertThat(file3, aFileWithSize(0)),
                 () -> assertThat(file4, aFileWithSize(0)),
-                () -> assertThat(file5, fileHasContent("A"))
+                () -> assertThat(file5, fileHasContent("A")),
+                () -> assertThat(loggingSpy.out(), stringContainsInOrder(
+                        "Wrote ", "1",
+                        "Wrote ", "a", "5"
+                ))
         );
     }
 
@@ -128,7 +132,9 @@ class ActionTest {
                 () -> assertThat(folder.resolve("a.bak"), pathHasContent("original")),
                 () -> assertThat(folder.resolve("a").toFile(), not(anExistingFile())),
                 () -> assertThat(folder.resolve("a.bak").toFile(), anExistingFile()),
-                () -> assertThat(folder.resolve("a.template").toFile(), anExistingFile())
+                () -> assertThat(folder.resolve("a.template").toFile(), anExistingFile()),
+                () -> assertThat(loggingSpy.err(), containsString("file is too large to read")),
+                () -> assertThat(loggingSpy.log(), stringContainsInOrder("null", "file is too large to read"))
         );
     }
 
