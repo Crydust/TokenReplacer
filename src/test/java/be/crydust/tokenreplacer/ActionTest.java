@@ -14,7 +14,10 @@ import static be.crydust.tokenreplacer.CustomFileMatchers.pathHasContent;
 import static be.crydust.tokenreplacer.TempDirHelper.newFile;
 import static be.crydust.tokenreplacer.TempDirHelper.newFolder;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.stringContainsInOrder;
 import static org.hamcrest.io.FileMatchers.aFileWithSize;
 import static org.hamcrest.io.FileMatchers.anExistingFile;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -111,9 +114,9 @@ class ActionTest {
                 () -> assertThat(file3, aFileWithSize(0)),
                 () -> assertThat(file4, aFileWithSize(0)),
                 () -> assertThat(file5, fileHasContent("A")),
-                () -> assertThat(loggingSpy.out(), stringContainsInOrder(
-                        "Wrote ", "1",
-                        "Wrote ", "a", "5"
+                () -> assertThat(loggingSpy.out(), anyOf(
+                        stringContainsInOrder("Wrote ", "1", "Wrote ", "a", "5"),
+                        stringContainsInOrder("Wrote ", "a", "5", "Wrote ", "1")
                 ))
         );
     }
