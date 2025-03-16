@@ -1,12 +1,6 @@
 package be.crydust.tokenreplacer;
 
-import ch.qos.logback.classic.PatternLayout;
-import ch.qos.logback.core.read.ListAppender;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.event.EventRecordingLogger;
 import org.slf4j.event.SubstituteLoggingEvent;
-import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
 import org.slf4j.helpers.SubstituteLogger;
 
@@ -15,7 +9,6 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayDeque;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
 
