@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cache xmlns="http://maven.apache.org/BUILD-CACHE-CONFIG/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://maven.apache.org/BUILD-CACHE-CONFIG/1.0.0 https://maven.apache.org/xsd/build-cache-config-1.0.0.xsd">
+    <configuration>
+        <enabled>true</enabled>
+        <hashAlgorithm>XX</hashAlgorithm>
+        <local>
+            <maxBuildsCached>3</maxBuildsCached>
+        </local>
+    </configuration>
+    <input>
+        <global>
+            <glob>{*.java,*.xml,*.properties}</glob>
+        </global>
+        <plugins>
+            <plugin artifactId="maven-surefire-plugin">
+                <effectivePom>
+                    <excludeProperties>
+                        <excludeProperty>argLine</excludeProperty>
+                    </excludeProperties>
+                </effectivePom>
+            </plugin>
+            <plugin artifactId="maven-enforcer-plugin">
+                <effectivePom>
+                    <excludeProperties>
+                        <excludeProperty>commandLineRules</excludeProperty>
+                    </excludeProperties>
+                </effectivePom>
+            </plugin>
+        </plugins>
+    </input>
+    <executionControl>
+        <reconcile>
+            <plugins>
+                <plugin artifactId="maven-surefire-plugin" goal="test">
+                    <reconciles>
+                        <reconcile propertyName="skip" skipValue="true"/>
+                        <reconcile propertyName="skipExec" skipValue="true"/>
+                        <reconcile propertyName="skipTests" skipValue="true"/>
+                        <reconcile propertyName="testFailureIgnore" skipValue="true"/>
+                    </reconciles>
+                </plugin>
+            </plugins>
+        </reconcile>
+    </executionControl>
+</cache>
