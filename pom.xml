@@ -58,13 +58,13 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.17</version>
+            <version>1.5.18</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.5.17</version>
+            <version>1.5.18</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -75,7 +75,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.12.0</version>
+            <version>5.13.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -115,7 +115,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.12</version>
+                <version>0.8.13</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -170,7 +170,7 @@
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.9.1.0</version>
+                <version>4.9.3.0</version>
                 <executions>
                     <execution>
                         <id>spotbugs-check</id>
@@ -187,7 +187,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.2</version>
+                <version>3.5.3</version>
             </plugin>
             <plugin>
                 <!-- adds Class-Path and Main-Class to MANIFEST.MF creating an executable jar -->
